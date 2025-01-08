@@ -24,7 +24,9 @@ MCPX4J is currently available on JitPack.
 </dependencies>
 ```
 
-## Usage
+## Quick Start
+
+Create a new `Mcpx` instance with your API key and start invoking your installed tools.
 
 ```java
 import com.github.dylibso.mcpx4j.Mcpx;
@@ -37,7 +39,7 @@ var bytes = servlet.call("""
 {
     "method": "tools/call",
     "params": {
-        "name": "my-tool-id", 
+        "name": "my-tool-id",
         "arguments": {
             ...
         }  
@@ -45,6 +47,8 @@ var bytes = servlet.call("""
 }
 """);
 ```
+
+Detailed examples are available in the [examples](examples) directory.
 
 
 ## Plugin Updates

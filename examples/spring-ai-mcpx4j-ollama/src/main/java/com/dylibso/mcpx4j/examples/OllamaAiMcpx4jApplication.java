@@ -10,13 +10,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+import java.io.IOException;
 import java.util.Collection;
 
 @SpringBootApplication
-public class OpenAiMcpx4jApplication {
+public class OllamaAiMcpx4jApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(OpenAiMcpx4jApplication.class, args);
+        SpringApplication.run(OllamaAiMcpx4jApplication.class, args);
     }
 
     // Load the configuration values from application.properties
@@ -30,30 +31,26 @@ public class OpenAiMcpx4jApplication {
     private String profileId;
 
     @Bean
-    public CommandLineRunner startup(
-            ChatClient.Builder chatClientBuilder,
-            ConfigurableApplicationContext context) {
+    public CommandLineRunner startup(ChatClient.Builder chatClientBuilder,
+                                     ConfigurableApplicationContext context) throws IOException {
 
         // Instantiate a new Mcpx client with the configuration values.
         var mcpx = Mcpx.forApiKey(apiKey).withBaseUrl(baseUrl).build();
         // Refresh the installed servlets definitions from mcp.run.
-        // This will load the configuration once.
-        // You can schedule this invocation periodically to refresh
-        // such configuration.
+        // This will load the configuration once. You can schedule this invocation
+        // periodically to refresh such configuration.
         mcpx.refreshInstallations(profileId);
         // Instantiate each servlet and expose it as a `FunctionCallback`
         var functions = functionsFromMcpxServlets(mcpx.servlets());
 
         return args -> {
             var chatClient = chatClientBuilder
-                // Load the `FunctionCallback`s into the chat interface
-                .defaultFunctions(functions)
-                // Define system prompt for AI behavior
-                // Note: this can be whatever you want,
-                // but it's recommended to give the LLM
-                // as much context as you can here while
-                // remaining generic for your use case.
-                .defaultSystem("""
+                    // Load the `FunctionCallback`s into the chat interface
+                    .defaultFunctions(functions)
+                    // Define system prompt for AI behavior
+                    // Note: this can be whatever you want, but it's recommended to give the LLM
+                    // as much context as you can here while remaining generic for your use case.
+                    .defaultSystem("""
 You are a helpful AI assistant with access to various external tools and APIs. Your goal is to complete tasks thoroughly and autonomously by making full use of these tools. Here are your core operating principles:
 
 1. Take initiative - Don't wait for user permission to use tools. If a tool would help complete the task, use it immediately.
@@ -74,9 +71,7 @@ Your responses should focus on results rather than asking questions. Only ask th
                     System.out.println("Goodbye!");
                     break;
                 }
-                if (input.isBlank()) { continue; }
-                System.out.println(
-                    "ASSISTANT: " + chatClient.prompt(input).call().content());
+                System.out.println("ASSISTANT: " + chatClient.prompt(input).call().content());
             }
 
             context.close();
@@ -84,11 +79,11 @@ Your responses should focus on results rather than asking questions. Only ask th
     }
 
     // Converts the servlets into FunctionCallbacks.
-    McpxToolFunctionCallback[] functionsFromMcpxServlets(
-            Collection<McpxServlet> servlets) {
+    McpxToolFunctionCallback[] functionsFromMcpxServlets(Collection<McpxServlet> servlets) {
         return servlets.stream()
                 .flatMap(servlet -> servlet.tools().values().stream())
                 .map(McpxToolFunctionCallback::new)
                 .toArray(McpxToolFunctionCallback[]::new);
     }
+
 }

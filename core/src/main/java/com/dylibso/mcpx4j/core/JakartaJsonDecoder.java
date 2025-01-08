@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class JakartaJsonDecoder implements JsonDecoder{
+public class JakartaJsonDecoder implements JsonDecoder {
     @Override
     public Map<String, ServletInstall> servletInstalls(byte[] bytes) {
         var jsonObject = Json.createReader(new ByteArrayInputStream(bytes)).readObject();

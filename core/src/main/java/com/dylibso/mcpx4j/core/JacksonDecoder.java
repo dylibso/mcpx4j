@@ -3,10 +3,12 @@ package com.dylibso.mcpx4j.core;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,15 +39,29 @@ public class JacksonDecoder implements JsonDecoder {
     @Override
     public List<McpxToolDescriptor> toolDescriptors(byte[] bytes) {
         try {
-            var tools = mapper.readTree(bytes).get("tools");
+            var root = mapper.readTree(bytes);
+            var tools = root.get("tools");
             if (tools == null) {
                 // Then it must be a single-tool servlet
-                return List.of(mapper.treeToValue(tools, McpxToolDescriptor.class));
+                return List.of(McpxToolReader.readToolDescriptor(root));
             } else {
-                return mapper.treeToValue(tools, new TypeReference<List<McpxToolDescriptor>>() {});
+                var result = new ArrayList<McpxToolDescriptor>();
+                for (JsonNode tool : tools) {
+                    result.add(McpxToolReader.readToolDescriptor(tool));
+                }
+                return result;
             }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        }
+    }
+
+    private static class McpxToolReader {
+        private static McpxToolDescriptor readToolDescriptor(JsonNode toolObject) {
+            var name = toolObject.get("name").asText();
+            var description = toolObject.get("description").asText();
+            var inputSchema = toolObject.get("inputSchema").toPrettyString();
+            return new McpxToolDescriptor(name, description, inputSchema);
         }
     }
 

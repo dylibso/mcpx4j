@@ -26,17 +26,17 @@ public class McpxServletOptions {
 
         private Builder() {}
 
-        public McpxServletOptions.Builder withAot() {
+        public Builder withAot() {
             this.aot = true;
             return this;
         }
 
-        public McpxServletOptions.Builder withChicoryHttpConfig(HttpConfig httpConfig) {
+        public Builder withChicoryHttpConfig(HttpConfig httpConfig) {
             this.chicoryHttpConfig = httpConfig;
             return this;
         }
 
-        public McpxServletOptions.Builder withChicoryLogger(Logger logger) {
+        public Builder withChicoryLogger(Logger logger) {
             this.chicoryLogger = logger;
             return this;
         }

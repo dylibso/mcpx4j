@@ -18,12 +18,4 @@
         <module>spring-ai-mcpx4j-openai</module>
     </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.dylibso.mcpx4j</groupId>
-            <artifactId>core</artifactId>
-            <version>${mcpx4j.version}</version>
-        </dependency>
-    </dependencies>
-
 </project>

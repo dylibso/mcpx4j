@@ -9,13 +9,17 @@ import java.util.logging.Logger;
 public class McpxToolExecutor implements ToolExecutor {
     private final McpxTool tool;
 
-    public McpxToolExecutor(McpxTool tool)  {
+    public McpxToolExecutor(McpxTool tool) {
         this.tool = tool;
     }
 
     @Override
     public String execute(ToolExecutionRequest toolExecutionRequest, Object o) {
-        Logger.getLogger(tool.name()).info("invoking Wasm MCP.RUN function, " + toolExecutionRequest.toString());
+        Logger.getLogger(tool.name())
+                .info("invoking Wasm MCP.RUN function, " +
+                        toolExecutionRequest.toString());
+        // Splice the function invocation into the JSON representation
+        // the MCPX tool expects.
         String adapted = """
                 {
                     "method":"tools/call",
@@ -23,14 +27,11 @@ public class McpxToolExecutor implements ToolExecutor {
                         "name": "%s",
                         "arguments" : %s
                     }
-                }""".formatted(toolExecutionRequest.name(), toolExecutionRequest.arguments());
+                }""".formatted(
+                toolExecutionRequest.name(),
+                toolExecutionRequest.arguments());
 
-        try {
-            return tool.call(adapted);
-        } catch (Exception e) {
-            Logger.getLogger(toolExecutionRequest.name()).info("Error! " + e.getMessage());
-            return "error: " + e.getMessage();
-        }
+        return tool.call(adapted);
     }
 
 }

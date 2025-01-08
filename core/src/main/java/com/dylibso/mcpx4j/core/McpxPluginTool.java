@@ -1,5 +1,6 @@
 package com.dylibso.mcpx4j.core;
 
+import org.extism.sdk.chicory.ExtismException;
 import org.extism.sdk.chicory.Plugin;
 
 import java.nio.charset.StandardCharsets;
@@ -35,8 +36,12 @@ public class McpxPluginTool implements McpxTool {
 
     @Override
     public String call(String jsonInput) {
-        return new String(plugin.call(
-                "call",
-                jsonInput.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
+        try {
+            return new String(plugin.call(
+                    "call",
+                    jsonInput.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
+        } catch (ExtismException e) {
+            return String.format("An error occurred while calling the function: %s", e.getMessage());
+        }
     }
 }

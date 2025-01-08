@@ -73,8 +73,8 @@ class McpxServletFactory {
 
     private static final Supplier<ExtismHostFunction> DEPRECATED_CONFIG_GET = () -> ExtismHostFunction.of(
             "config_get",
-            java.util.List.of(ExtismValType.I64),
-            java.util.List.of(ExtismValType.I64),
+            List.of(ExtismValType.I64),
+            List.of(ExtismValType.I64),
             (currentPlugin, extismValueList, extismValueList1) -> {
                 throw new UnsupportedOperationException("deprecated");
             });
