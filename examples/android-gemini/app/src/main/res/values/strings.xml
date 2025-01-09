@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Mcpx4jGemini</string>
+    <string name="action_go">Go</string>
+    <string name="baking_title">Mcpx4j with Gemini</string>
+    <string name="label_prompt">Prompt</string>
+    <string name="prompt_placeholder">
+        I would like to visit the place in the first picture,
+        and then see the painting in the second picture.
+        Can you give directions between them and find a guide online?
+        Start from the first, and then go to the second.
+        Give me a summary of the directions and of the guide</string>
+    <string name="image1_description">Tour Eiffel</string>
+    <string name="image2_description">Mona Lisa</string>
+    <string name="image3_description">Montmartre</string>
+    <string name="results_placeholder">(Results will appear here)</string>
+</resources>

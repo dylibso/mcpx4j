@@ -1,0 +1,8 @@
+## Rename this file to local.properties, and
+## fill with your secrets.
+##
+## `local.properties` must *NOT* be checked into Version Control Systems,
+## as it contains information specific to your local configuration.
+sdk.dir=<your-sdk-path>
+apiKey=<your-google-api-key>
+mcpRunKey=<your-mcp-run-session-id>
