@@ -15,7 +15,7 @@
         <dependency>
             <groupId>com.github.extism</groupId>
             <artifactId>chicory-sdk</artifactId>
-            <version>60867022b0</version>
+            <version>0.1.0</version>
         </dependency>
 
         <dependency>
