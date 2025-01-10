@@ -10,7 +10,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>core</module>
-        <module>examples</module>
     </modules>
 
     <properties>
@@ -31,6 +30,20 @@
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
+
+    <profiles>
+        <profile>
+            <id>main</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property><name>!release</name></property>
+            </activation>
+            <modules>
+                <module>core</module>
+                <module>examples</module>
+            </modules>
+        </profile>
+    </profiles>
 
 
 </project>
