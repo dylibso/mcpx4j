@@ -11,10 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class McpxTest {
     @Test
     void testSlug() {
-        var mcpx = Mcpx.forApiKey("my-key")
-                .withBaseUrl("http://localhost:8080")
-                .build();
-
         var cases = List.of(
                 Map.entry(s(), "~/default"),
                 Map.entry(s("default"), "~/default"),
@@ -25,7 +21,7 @@ class McpxTest {
         for (var c : cases) {
             var input = c.getKey();
             var expected = c.getValue();
-            var actual = mcpx.profileIdToSlug(input);
+            var actual = Mcpx.Builder.profileIdToSlug(input);
             assertEquals(expected, actual);
         }
 
@@ -40,7 +36,7 @@ class McpxTest {
         );
 
         for (var e : errors) {
-            assertThrows(IllegalArgumentException.class, () -> mcpx.profileIdToSlug(e), Arrays.toString(e));
+            assertThrows(IllegalArgumentException.class, () -> Mcpx.Builder.profileIdToSlug(e), Arrays.toString(e));
         }
     }
 

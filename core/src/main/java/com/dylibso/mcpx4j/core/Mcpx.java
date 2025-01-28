@@ -19,6 +19,7 @@ public class Mcpx {
         private JsonDecoder jsonDecoder;
         private HttpClientAdapter httpClientAdapter;
         private McpxServletOptions config;
+        private String profileSlug = "~/default";
 
         public Builder(String apiKey) {
             Objects.requireNonNull(apiKey, "apiKey is required");
@@ -46,6 +47,11 @@ public class Mcpx {
             return this;
         }
 
+        public Builder withProfile(String... profileSlug) {
+            this.profileSlug = profileIdToSlug(profileSlug);
+            return this;
+        }
+
         public Mcpx build() {
             Objects.requireNonNull(baseUrl);
             if (config == null) {
@@ -57,7 +63,35 @@ public class Mcpx {
             if (httpClientAdapter == null) {
                 httpClientAdapter = new JdkHttpClientAdapter();
             }
-            return new Mcpx(apiKey, baseUrl, jsonDecoder, httpClientAdapter, config);
+            return new Mcpx(apiKey, baseUrl, profileSlug, jsonDecoder, httpClientAdapter, config);
+        }
+
+        /**
+         * @param profile is a list of components for a slug. It may be empty (then it defaults to `~/default`),
+         *                it may contain one single value `"default"`.
+         *                Otherwise, it must contain two components, the first being a username
+         *                and the second being a profile name.
+         *                Neither the profile name nor the username may contain a slash.
+         *                It is also allowed to pass the values `"~", "default"`, yielding `~/default`.
+         */
+        static String profileIdToSlug(String... profile) {
+            if (profile.length == 0) {
+                return "~/default";
+            }
+            if (profile.length == 1) {
+                if (profile[0].equals("default")) {
+                    return "~/default";
+                } else {
+                    throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
+                }
+            }
+            if (profile.length > 2) {
+                throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
+            }
+            if (profile[0].equals("~") && !profile[1].equals("default") || profile[0].contains("/") ||  profile[1].contains("/")) {
+                throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
+            }
+            return profile[0] + "/" + profile[1];
         }
     }
 
@@ -70,11 +104,13 @@ public class Mcpx {
     private final HttpClient client;
     private final ConcurrentHashMap<String, McpxServletFactory> plugins;
     private final ConcurrentHashMap<String, ServletInstall> servletInstalls;
+    private final String profileSlug;
     private final McpxServletOptions config;
     private final List<McpxServlet> builtIns;
     private final JsonDecoder jsonDecoder;
 
-    Mcpx(String apiKey, String baseUrl, JsonDecoder jsonDecoder, HttpClientAdapter httpClientAdapter, McpxServletOptions config) {
+    Mcpx(String apiKey, String baseUrl, String profileSlug, JsonDecoder jsonDecoder, HttpClientAdapter httpClientAdapter, McpxServletOptions config) {
+        this.profileSlug = profileSlug;
         this.config = config;
         this.jsonDecoder = jsonDecoder;
         this.client = new HttpClient(baseUrl, apiKey, httpClientAdapter, jsonDecoder);
@@ -83,39 +119,9 @@ public class Mcpx {
         this.builtIns = List.of(new McpRunServlet(client, jsonDecoder));
     }
 
-    /**
-     * Refresh the list of installations for the given profile.
-     * @param profileId is a list of components for a slug. It may be empty (then it defaults to `~/default`),
-     *                  it may contain one single value `"default"`.
-     *                  Otherwise, it must contain two components, the first being a username
-     *                  and the second being a profile name.
-     *                  Neither the profile name nor the username may contain a slash.
-     *                  It is also allowed to pass the values `"~", "default"`, yielding `~/default`.
-     */
-    public void refreshInstallations(String... profileId) {
-        String slug = profileIdToSlug(profileId);
-        Map<String, ServletInstall> installations = client.installations(slug);
+    public void refreshInstallations() {
+        Map<String, ServletInstall> installations = client.installations(profileSlug);
         servletInstalls.putAll(installations);
-    }
-
-    String profileIdToSlug(String... profile) {
-        if (profile.length == 0) {
-            return "~/default";
-        }
-        if (profile.length == 1) {
-            if (profile[0].equals("default")) {
-                return "~/default";
-            } else {
-                throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
-            }
-        }
-        if (profile.length > 2) {
-            throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
-        }
-        if (profile[0].equals("~") && !profile[1].equals("default") || profile[0].contains("/") ||  profile[1].contains("/")) {
-            throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
-        }
-        return profile[0] + "/" + profile[1];
     }
 
     public McpxServletFactory get(String name) {

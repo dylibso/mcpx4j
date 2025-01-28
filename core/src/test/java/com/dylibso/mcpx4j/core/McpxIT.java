@@ -34,13 +34,12 @@ class McpxIT {
         String baseUrl = "http://" + address.getHostName() + ":" + address.getPort();
         try {
             server.start();
-            var mcpx = Mcpx.forApiKey("my-key")
-                    .withBaseUrl(baseUrl)
-                    .withJsonDecoder(jsonDecoder).build();
-
             for (var profileSlug : profileSlugs) {
                 assertThrows(IllegalArgumentException.class,
-                        () -> mcpx.refreshInstallations(profileSlug), profileSlug);
+                        () -> Mcpx.forApiKey("my-key")
+                                .withBaseUrl(baseUrl)
+                                .withJsonDecoder(jsonDecoder)
+                                .withProfile(profileSlug).build(), profileSlug);
             }
         } finally {
             server.stop(0);
@@ -60,8 +59,9 @@ class McpxIT {
 
             var mcpx = Mcpx.forApiKey("my-key")
                     .withBaseUrl(baseUrl)
+                    .withProfile(profileId)
                     .withJsonDecoder(jsonDecoder).build();
-            mcpx.refreshInstallations(profileId);
+            mcpx.refreshInstallations();
             McpxServletFactory servletFactory = mcpx.get("fetch");
 
             assertNotNull(servletFactory);
