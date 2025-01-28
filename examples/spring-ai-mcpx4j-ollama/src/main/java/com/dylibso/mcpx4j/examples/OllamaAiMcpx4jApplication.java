@@ -35,11 +35,11 @@ public class OllamaAiMcpx4jApplication {
                                      ConfigurableApplicationContext context) throws IOException {
 
         // Instantiate a new Mcpx client with the configuration values.
-        var mcpx = Mcpx.forApiKey(apiKey).withBaseUrl(baseUrl).build();
+        var mcpx = Mcpx.forApiKey(apiKey).withBaseUrl(baseUrl).withProfile(profileId).build();
         // Refresh the installed servlets definitions from mcp.run.
         // This will load the configuration once. You can schedule this invocation
         // periodically to refresh such configuration.
-        mcpx.refreshInstallations(profileId);
+        mcpx.refreshInstallations();
         // Instantiate each servlet and expose it as a `FunctionCallback`
         var functions = functionsFromMcpxServlets(mcpx.servlets());
 
