@@ -69,6 +69,9 @@
         <jackson-databind.version>2.18.2</jackson-databind.version>
         <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
         <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
+        <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
     </properties>
 
     <profiles>
@@ -104,6 +107,35 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven-javadoc-plugin.version}</version>
+                        <configuration>
+                            <additionalJOption>-Xdoclint:none</additionalJOption>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadoc</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven-source-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-source</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>${maven-gpg-plugin.version}</version>
                         <configuration>
@@ -125,6 +157,7 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>${nexus-staging-maven-plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>ossrh</serverId>
