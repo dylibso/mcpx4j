@@ -1,0 +1,77 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-version:
+        description: 'Version being released'
+        required: true
+      branch:
+        description: 'Branch to release from'
+        required: true
+        default: 'main'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'temurin'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - id: install-secret-key
+        name: Install gpg secret key
+        run: |
+          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
+
+      - name: Compile
+        run: --batch-mode --no-transfer-progress -Drelease
+
+      - name: Setup Git
+        run: |
+          git config user.name "Mcpx4j BOT"
+          git config user.email "oss@dylibso.com"
+
+      - name: Set the version
+        run: |
+          mvn --batch-mode --no-transfer-progress versions:set -DgenerateBackupPoms=false -DnewVersion=${{ github.event.inputs.release-version }}
+        env:
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+
+      - name: Release to Maven Central
+        run: |
+          mvn --batch-mode --no-transfer-progress clean deploy -Drelease -DskipTests=true -X
+        env:
+          MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Commit tag, back to Snapshot and Push
+        if: ${{ ! endsWith(github.event.inputs.release-version, '-SNAPSHOT') }}
+        run: |
+          git add .
+          git commit -m "Release version update ${{ github.event.inputs.release-version }}"
+          git tag ${{ github.event.inputs.release-version }}
+          mvn --batch-mode --no-transfer-progress versions:set -DgenerateBackupPoms=false -DnewVersion=999-SNAPSHOT
+          git add .
+          git commit -m "Snapshot version update"
+          git push
+          git push origin ${{ github.event.inputs.release-version }}
+        env:
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
