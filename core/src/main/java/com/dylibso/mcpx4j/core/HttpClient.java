@@ -24,21 +24,32 @@ public class HttpClient {
 
     // GET /api/profiles/~/default/installations
     public Map<String, ServletInstall> installations(String profileId) {
-        var uri = URI.create(baseUrl + "/api/profiles/~/" + profileId + "/installations");
+        var uri = URI.create(baseUrl + "/api/profiles/" + profileId + "/installations");
         byte[] bytes = httpAdapter.request("GET", uri, Map.of("Cookie", "sessionId=" + apiKey), new byte[0]);
+        if (httpAdapter.statusCode() != 200) {
+            throw new HttpClientException("Failed to fetch installations: " + httpAdapter.statusCode());
+        }
         return jsonDecoder.servletInstalls(bytes);
     }
 
     // GET /c/{contentAddress}
     public byte[] fetch(ServletInstall servletInstall) {
         var uri = URI.create(baseUrl + "/api/c/" + servletInstall.servlet().meta().lastContentAddress());
-        return httpAdapter.request("GET", uri, Map.of("Cookie", "sessionId=" + apiKey), new byte[0]);
+        byte[] bytes = httpAdapter.request("GET", uri, Map.of("Cookie", "sessionId=" + apiKey), new byte[0]);
+        if (httpAdapter.statusCode() != 200) {
+            throw new HttpClientException("Failed to fetch installations: " + httpAdapter.statusCode());
+        }
+        return bytes;
     }
 
     // GET /api/servlets
     public byte[] search(String query) {
         var uri = URI.create(baseUrl + "/api/servlets");
-        return httpAdapter.request("GET", uri, Map.of("Cookie", "sessionId=" + apiKey), new byte[0]);
+        byte[] bytes = httpAdapter.request("GET", uri, Map.of("Cookie", "sessionId=" + apiKey), new byte[0]);
+        if (httpAdapter.statusCode() != 200) {
+            throw new HttpClientException("Failed to fetch installations: " + httpAdapter.statusCode());
+        }
+        return bytes;
     }
 
 }

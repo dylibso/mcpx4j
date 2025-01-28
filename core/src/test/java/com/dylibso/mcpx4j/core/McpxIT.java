@@ -8,10 +8,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -24,11 +26,34 @@ class McpxIT {
 
     @ParameterizedTest
     @MethodSource("provideJsonDecoder")
+    void invalidSlug(JsonDecoder jsonDecoder) throws IOException {
+        var profileSlugs = List.of("~/foo", "foo/bar");
+
+        var address = new InetSocketAddress(8080);
+        var server = MockServer.fetch(address);
+        String baseUrl = "http://" + address.getHostName() + ":" + address.getPort();
+        try {
+            server.start();
+            var mcpx = Mcpx.forApiKey("my-key")
+                    .withBaseUrl(baseUrl)
+                    .withJsonDecoder(jsonDecoder).build();
+
+            for (var profileSlug : profileSlugs) {
+                assertThrows(IllegalArgumentException.class,
+                        () -> mcpx.refreshInstallations(profileSlug), profileSlug);
+            }
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideJsonDecoder")
     void installations(JsonDecoder jsonDecoder) throws IOException {
         var profileId = "default";
 
         var address = new InetSocketAddress(8080);
-        var server = MockServer.fetch(address, profileId);
+        var server = MockServer.fetch(address);
         String baseUrl = "http://" + address.getHostName() + ":" + address.getPort();
         try {
             server.start();
@@ -73,5 +98,6 @@ class McpxIT {
             server.stop(0);
         }
     }
+
 
 }

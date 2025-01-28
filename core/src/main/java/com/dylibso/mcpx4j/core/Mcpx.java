@@ -5,6 +5,7 @@ import org.extism.sdk.chicory.HttpClientAdapter;
 import org.extism.sdk.chicory.JdkHttpClientAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -82,9 +83,30 @@ public class Mcpx {
         this.builtIns = List.of(new McpRunServlet(client, jsonDecoder));
     }
 
-    public void refreshInstallations(String profileId) {
-        Map<String, ServletInstall> installations = client.installations(profileId);
+    public void refreshInstallations(String... profileId) {
+        String slug = profileIdToSlug(profileId);
+        Map<String, ServletInstall> installations = client.installations(slug);
         servletInstalls.putAll(installations);
+    }
+
+    String profileIdToSlug(String... profile) {
+        if (profile.length == 0) {
+            return "~/default";
+        }
+        if (profile.length == 1) {
+            if (profile[0].equals("default")) {
+                return "~/default";
+            } else {
+                throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
+            }
+        }
+        if (profile.length > 2) {
+            throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
+        }
+        if (profile[0].equals("~") && !profile[1].equals("default") || profile[0].contains("/") ||  profile[1].contains("/")) {
+            throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
+        }
+        return profile[0] + "/" + profile[1];
     }
 
     public McpxServletFactory get(String name) {

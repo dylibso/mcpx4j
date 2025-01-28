@@ -28,10 +28,10 @@ class HttpClientIT {
     @ParameterizedTest
     @MethodSource("provideJsonDecoder")
     void installations(JsonDecoder jsonDecoder) throws IOException {
-        var profileId = "default";
+        var profileId = "~/default";
 
         var address = new InetSocketAddress(8080);
-        HttpServer server = MockServer.installations(address, profileId);
+        HttpServer server = MockServer.installations(address);
         String baseUrl = "http://" + address.getHostName() + ":" + address.getPort();
         try {
 
@@ -58,13 +58,10 @@ class HttpClientIT {
     @ParameterizedTest
     @MethodSource("provideJsonDecoder")
     void fetch(JsonDecoder jsonDecoder) throws IOException {
-        byte[] mockBody = this.getClass().getClassLoader().getResourceAsStream("installations.json").readAllBytes();
-        byte[] wasm = this.getClass().getClassLoader().getResourceAsStream("fetch.wasm").readAllBytes();
-        var profileId = "default";
-        var caddress = "abcdefg";
+        var profileId = "~/default";
 
         var address = new InetSocketAddress(8080);
-        HttpServer server = MockServer.fetch(address, profileId);
+        HttpServer server = MockServer.fetch(address);
         String baseUrl = "http://" + address.getHostName() + ":" + address.getPort();
 
         try {
