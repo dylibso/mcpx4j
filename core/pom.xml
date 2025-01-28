@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.extism</groupId>
+            <groupId>org.extism.sdk</groupId>
             <artifactId>chicory-sdk</artifactId>
             <version>0.1.0</version>
         </dependency>
