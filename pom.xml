@@ -7,10 +7,56 @@
     <groupId>com.dylibso.mcpx4j</groupId>
     <artifactId>mcpx4j</artifactId>
     <version>999-SNAPSHOT</version>
+    <description>Java client library for https://mcp.run - call portable and secure tools for your AI Agents and Apps</description>
+    <url>https://github.com/dylibso/mcpx4j</url>
+
     <packaging>pom</packaging>
     <modules>
         <module>core</module>
     </modules>
+
+    <organization>
+        <name>Dylibso, Inc.</name>
+        <url>https://dylibso.com</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>The Mcpx4j Authors</name>
+            <email>oss@dylibso.com</email>
+            <organization>Dylibso, Inc.</organization>
+            <organizationUrl>https://dylibso.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/dylibso/mcpx4j.git</connection>
+        <developerConnection>scm:git:ssh://github.com:dylibso/mcpx4j.git</developerConnection>
+        <url>http://github.com/dylibso/mcpx4j/tree/main</url>
+    </scm>
+
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/dylibso/mcpx4j/issues</url>
+    </issueManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <name>Central Repository OSSRH</name>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -22,6 +68,7 @@
         <parsson.version>1.1.7</parsson.version>
         <jackson-databind.version>2.18.2</jackson-databind.version>
         <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
+        <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
     </properties>
 
     <profiles>
@@ -36,6 +83,59 @@
                 <module>examples</module>
             </modules>
         </profile>
+
+        <profile>
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>release</name>
+                </property>
+            </activation>
+            <modules>
+                <module>core</module>
+            </modules>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven-gpg-plugin.version}</version>
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <phase>verify</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
 
 
