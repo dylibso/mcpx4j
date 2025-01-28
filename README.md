@@ -5,21 +5,12 @@ The MCP.RUN client library for Java!
 
 ## Installation
 
-MCPX4J is currently available on JitPack.
-
 ```xml
-<repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-
 <dependencies>
     <dependency>
-        <groupId>com.github.dylibso</groupId>
+       <groupId>com.dylibso.mcpx4j</groupId>
         <artifactId>mcpx4j</artifactId>
-        <version>main-SNAPSHOT</version>
+        <version>${mcpx4j.version}</version>
     </dependency>
 </dependencies>
 ```
