@@ -12,13 +12,13 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-class McpxServletFactory {
+public class McpxServletFactory {
     private final ServletInstall install;
     private final Manifest manifest;
     private final McpxServletOptions config;
     private final JsonDecoder jsonDecoder;
 
-    public McpxServletFactory(ServletInstall install, Manifest manifest, McpxServletOptions config, JsonDecoder jsonDecoder) {
+    McpxServletFactory(ServletInstall install, Manifest manifest, McpxServletOptions config, JsonDecoder jsonDecoder) {
         this.install = install;
         this.manifest = manifest;
         this.config = config;

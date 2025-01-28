@@ -37,7 +37,7 @@ public class LangChain4jMcpx4jMain {
         String profileId = config.getValue("mcpx.profile-id", String.class);
 
         // Instantiate a new Mcpx client with the configuration values.
-        var mcpx = Mcpx.forApiKey(apiKey).withBaseUrl(baseUrl).build();
+        var mcpx = Mcpx.forApiKey(apiKey).withBaseUrl(baseUrl).withProfile().build();
         // Refresh the installed servlets definitions from mcp.run.
         // This will load the configuration once.
         // You can schedule this invocation periodically to refresh

@@ -83,6 +83,15 @@ public class Mcpx {
         this.builtIns = List.of(new McpRunServlet(client, jsonDecoder));
     }
 
+    /**
+     * Refresh the list of installations for the given profile.
+     * @param profileId is a list of components for a slug. It may be empty (then it defaults to `~/default`),
+     *                  it may contain one single value `"default"`.
+     *                  Otherwise, it must contain two components, the first being a username
+     *                  and the second being a profile name.
+     *                  Neither the profile name nor the username may contain a slash.
+     *                  It is also allowed to pass the values `"~", "default"`, yielding `~/default`.
+     */
     public void refreshInstallations(String... profileId) {
         String slug = profileIdToSlug(profileId);
         Map<String, ServletInstall> installations = client.installations(slug);
