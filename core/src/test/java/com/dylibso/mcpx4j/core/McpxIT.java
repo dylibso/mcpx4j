@@ -28,15 +28,16 @@ class McpxIT {
         var profileId = "default";
 
         var address = new InetSocketAddress(8080);
-        var server = MockServer.fetch(address, profileId);
+        var server = MockServer.fetch(address);
         String baseUrl = "http://" + address.getHostName() + ":" + address.getPort();
         try {
             server.start();
 
             var mcpx = Mcpx.forApiKey("my-key")
                     .withBaseUrl(baseUrl)
+                    .withProfile(profileId)
                     .withJsonDecoder(jsonDecoder).build();
-            mcpx.refreshInstallations(profileId);
+            mcpx.refreshInstallations();
             McpxServletFactory servletFactory = mcpx.get("fetch");
 
             assertNotNull(servletFactory);
@@ -73,5 +74,6 @@ class McpxIT {
             server.stop(0);
         }
     }
+
 
 }

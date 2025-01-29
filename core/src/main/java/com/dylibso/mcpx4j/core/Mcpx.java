@@ -4,7 +4,10 @@ import com.dylibso.mcpx4j.core.builtins.McpRunServlet;
 import org.extism.sdk.chicory.HttpClientAdapter;
 import org.extism.sdk.chicory.JdkHttpClientAdapter;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +21,7 @@ public class Mcpx {
         private JsonDecoder jsonDecoder;
         private HttpClientAdapter httpClientAdapter;
         private McpxServletOptions config;
+        private String profileSlug = "~/default";
 
         public Builder(String apiKey) {
             Objects.requireNonNull(apiKey, "apiKey is required");
@@ -45,6 +49,11 @@ public class Mcpx {
             return this;
         }
 
+        public Builder withProfile(String... profileSlug) {
+            this.profileSlug = profileIdToSlug(profileSlug);
+            return this;
+        }
+
         public Mcpx build() {
             Objects.requireNonNull(baseUrl);
             if (config == null) {
@@ -56,7 +65,29 @@ public class Mcpx {
             if (httpClientAdapter == null) {
                 httpClientAdapter = new JdkHttpClientAdapter();
             }
-            return new Mcpx(apiKey, baseUrl, jsonDecoder, httpClientAdapter, config);
+            return new Mcpx(apiKey, baseUrl, profileSlug, jsonDecoder, httpClientAdapter, config);
+        }
+
+        /**
+         * @param profile is a list of components for a slug. It may be empty (then it defaults to `~/default`),
+         *                it may contain one single value `hello` then it will resolve to `~/hello`.
+         *                Otherwise, it must contain two components: a username and a profile name.
+         *                The username may be `~` which is a shorthand for current user's profile.
+         */
+        static String profileIdToSlug(String... profile) {
+            if (profile.length == 0) {
+                return "~/default";
+            }
+            if (profile.length == 1) {
+                return "~/" + URLEncoder.encode(profile[0], StandardCharsets.UTF_8);
+            }
+            if (profile.length > 2) {
+                throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
+            }
+            String ns = profile[0].equals("~")? "~" : URLEncoder.encode(profile[0], StandardCharsets.UTF_8);
+            String p = URLEncoder.encode(profile[1], StandardCharsets.UTF_8);
+
+            return ns + "/" + p;
         }
     }
 
@@ -69,11 +100,13 @@ public class Mcpx {
     private final HttpClient client;
     private final ConcurrentHashMap<String, McpxServletFactory> plugins;
     private final ConcurrentHashMap<String, ServletInstall> servletInstalls;
+    private final String profileSlug;
     private final McpxServletOptions config;
     private final List<McpxServlet> builtIns;
     private final JsonDecoder jsonDecoder;
 
-    Mcpx(String apiKey, String baseUrl, JsonDecoder jsonDecoder, HttpClientAdapter httpClientAdapter, McpxServletOptions config) {
+    Mcpx(String apiKey, String baseUrl, String profileSlug, JsonDecoder jsonDecoder, HttpClientAdapter httpClientAdapter, McpxServletOptions config) {
+        this.profileSlug = profileSlug;
         this.config = config;
         this.jsonDecoder = jsonDecoder;
         this.client = new HttpClient(baseUrl, apiKey, httpClientAdapter, jsonDecoder);
@@ -82,8 +115,8 @@ public class Mcpx {
         this.builtIns = List.of(new McpRunServlet(client, jsonDecoder));
     }
 
-    public void refreshInstallations(String profileId) {
-        Map<String, ServletInstall> installations = client.installations(profileId);
+    public void refreshInstallations() {
+        Map<String, ServletInstall> installations = client.installations(profileSlug);
         servletInstalls.putAll(installations);
     }
 
