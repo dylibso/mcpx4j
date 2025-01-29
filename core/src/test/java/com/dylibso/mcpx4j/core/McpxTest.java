@@ -15,6 +15,8 @@ class McpxTest {
                 Map.entry(s(), "~/default"),
                 Map.entry(s("default"), "~/default"),
                 Map.entry(s("~", "default"), "~/default"),
+                Map.entry(s("abc"), "~/abc"),
+                Map.entry(s("~", "abc"), "~/abc"),
                 Map.entry(s("user", "foo"), "user/foo")
         );
 
@@ -26,8 +28,6 @@ class McpxTest {
         }
 
         var errors = List.of(
-                s("~", "abc"),
-                s("x"),
                 s("x", "y", "z"),
                 s("x/y"),
                 s("x/y/z"),

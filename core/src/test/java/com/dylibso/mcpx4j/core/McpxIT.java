@@ -27,7 +27,7 @@ class McpxIT {
     @ParameterizedTest
     @MethodSource("provideJsonDecoder")
     void invalidSlug(JsonDecoder jsonDecoder) throws IOException {
-        var profileSlugs = List.of("~/foo", "foo/bar");
+        var profileSlugs = List.of("foo/foo", "foo/bar");
 
         var address = new InetSocketAddress(8080);
         var server = MockServer.fetch(address);

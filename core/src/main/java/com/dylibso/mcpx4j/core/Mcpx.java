@@ -79,16 +79,15 @@ public class Mcpx {
                 return "~/default";
             }
             if (profile.length == 1) {
-                if (profile[0].equals("default")) {
-                    return "~/default";
-                } else {
+                if (profile[0].contains("/")) {
                     throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
                 }
+                return "~/" + profile[0];
             }
             if (profile.length > 2) {
                 throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
             }
-            if (profile[0].equals("~") && !profile[1].equals("default") || profile[0].contains("/") ||  profile[1].contains("/")) {
+            if (profile[0].contains("/") ||  profile[1].contains("/")) {
                 throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
             }
             return profile[0] + "/" + profile[1];
