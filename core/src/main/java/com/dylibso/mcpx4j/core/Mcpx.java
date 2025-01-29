@@ -4,6 +4,8 @@ import com.dylibso.mcpx4j.core.builtins.McpRunServlet;
 import org.extism.sdk.chicory.HttpClientAdapter;
 import org.extism.sdk.chicory.JdkHttpClientAdapter;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -68,29 +70,24 @@ public class Mcpx {
 
         /**
          * @param profile is a list of components for a slug. It may be empty (then it defaults to `~/default`),
-         *                it may contain one single value `"default"`.
-         *                Otherwise, it must contain two components, the first being a username
-         *                and the second being a profile name.
-         *                Neither the profile name nor the username may contain a slash.
-         *                It is also allowed to pass the values `"~", "default"`, yielding `~/default`.
+         *                it may contain one single value `hello` then it will resolve to `~/hello`.
+         *                Otherwise, it must contain two components: a username and a profile name.
+         *                The username may be `~` which is a shorthand for current user's profile.
          */
         static String profileIdToSlug(String... profile) {
             if (profile.length == 0) {
                 return "~/default";
             }
             if (profile.length == 1) {
-                if (profile[0].contains("/")) {
-                    throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
-                }
-                return "~/" + profile[0];
+                return "~/" + URLEncoder.encode(profile[0], StandardCharsets.UTF_8);
             }
             if (profile.length > 2) {
                 throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
             }
-            if (profile[0].contains("/") ||  profile[1].contains("/")) {
-                throw new IllegalArgumentException("Invalid profile path: " + Arrays.toString(profile));
-            }
-            return profile[0] + "/" + profile[1];
+            String ns = profile[0].equals("~")? "~" : URLEncoder.encode(profile[0], StandardCharsets.UTF_8);
+            String p = URLEncoder.encode(profile[1], StandardCharsets.UTF_8);
+
+            return ns + "/" + p;
         }
     }
 
