@@ -100,6 +100,7 @@ public class Mcpx {
     private final HttpClient client;
     private final ConcurrentHashMap<String, McpxServletFactory> plugins;
     private final ConcurrentHashMap<String, ServletInstall> servletInstalls;
+    private final ConcurrentHashMap<String, ServletOAuth> oauthTokens;
     private final String profileSlug;
     private final McpxServletOptions config;
     private final List<McpxServlet> builtIns;
@@ -112,12 +113,37 @@ public class Mcpx {
         this.client = new HttpClient(baseUrl, apiKey, httpClientAdapter, jsonDecoder);
         this.plugins = new ConcurrentHashMap<>();
         this.servletInstalls = new ConcurrentHashMap<>();
+        this.oauthTokens = new ConcurrentHashMap<>();
         this.builtIns = List.of(new McpRunServlet(client, jsonDecoder));
     }
 
     public void refreshInstallations() {
         Map<String, ServletInstall> installations = client.installations(profileSlug);
         servletInstalls.putAll(installations);
+
+        refreshOauth();
+    }
+
+    public void refreshOauth() {
+        var time = System.currentTimeMillis();
+        for (ServletInstall install : servletInstalls.values()) {
+            // FIXME check whether the servlet needs oauth at all
+            String name = install.name();
+            refreshOauth(install, name, time);
+        }
+    }
+
+    public ServletOAuth oauth(String name) {
+        return refreshOauth(servletInstalls.get(name), name, System.currentTimeMillis());
+    }
+
+    private ServletOAuth refreshOauth(ServletInstall install, String name, long now) {
+        ServletOAuth servletOAuth = oauthTokens.get(name);
+        if (servletOAuth == null || servletOAuth.maxTimestamp() > now) {
+            servletOAuth = client.oauth(profileSlug, install);
+            oauthTokens.put(name, servletOAuth);
+        }
+        return servletOAuth;
     }
 
     public McpxServletFactory get(String name) {
@@ -136,6 +162,8 @@ public class Mcpx {
         }
         return plugins.get(name);
     }
+
+
 
     public Collection<McpxServlet> servlets() {
         var servlets = new ArrayList<>(builtIns);

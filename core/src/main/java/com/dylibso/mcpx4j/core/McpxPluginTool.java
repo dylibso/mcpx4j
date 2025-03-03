@@ -19,6 +19,10 @@ public class McpxPluginTool implements McpxTool {
         this.inputschema = descriptor.inputSchema();
     }
 
+    public void updateOAuth(ServletOAuth oAuth) {
+        // FIXME plugin.setVar(...) ?
+    }
+
     @Override
     public String name() {
         return name;
