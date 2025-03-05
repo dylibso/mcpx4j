@@ -39,6 +39,14 @@ public class JakartaJsonDecoder implements JsonDecoder {
         return jsonObject.getJsonObject("params").getJsonObject("arguments").getString("q");
     }
 
+    @Override
+    public ServletOAuthInfo oauth(byte[] bytes) {
+        var jsonObject = Json.createReader(new ByteArrayInputStream(bytes)).readObject().getJsonObject("oauth_info");
+        var configName = jsonObject.getString("config_name");
+        var accessToken = jsonObject.getString("access_token");
+        return new ServletOAuthInfo(configName, accessToken);
+    }
+
     private static class McpxToolReader {
         private static McpxToolDescriptor readToolDescriptor(JsonObject toolObject) {
             var name = toolObject.getString("name");

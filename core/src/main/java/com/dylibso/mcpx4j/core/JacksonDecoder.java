@@ -56,6 +56,16 @@ public class JacksonDecoder implements JsonDecoder {
         }
     }
 
+    @Override
+    public ServletOAuthInfo oauth(byte[] bytes) {
+        try {
+            var installs = mapper.readTree(bytes).get("oauth_info");
+            return mapper.treeToValue(installs, ServletOAuthInfo.class);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
     private static class McpxToolReader {
         private static McpxToolDescriptor readToolDescriptor(JsonNode toolObject) {
             var name = toolObject.get("name").asText();

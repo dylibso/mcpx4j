@@ -37,7 +37,7 @@ public class ServletInstallReader {
 
     static ServletSettings readSettings(JsonObject settings) {
         ServletSettings servletSettings = new ServletSettings(
-                asMap(settings.getJsonObject("config")),
+                new OAuthAwareConfigProvider(asMap(settings.getJsonObject("config"))),
                 readPermissions(settings.getJsonObject("permissions")));
         return servletSettings;
     }

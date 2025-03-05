@@ -54,7 +54,7 @@ public class McpxServletFactory {
     public static McpxServletFactory create(byte[] bytes, String name, ServletInstall install, McpxServletOptions config, JsonDecoder jsonDecoder) {
         var wasm = ManifestWasm.fromBytes(bytes).build();
         Manifest.Options opts = new Manifest.Options()
-                .withConfig(install.settings().config())
+                .withConfigProvider(install.settings().config())
                 .withAllowedHosts(install.settings().permissions().network().domains())
                 .withHttpConfig(config.chicoryHttpConfig)
                 .withWasi(WasiOptions.builder()

@@ -5,17 +5,17 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class ServletSettings {
-    private Map<String, String> config;
+    private OAuthAwareConfigProvider config;
     private Permissions permissions;
 
     ServletSettings() {}
 
-    public ServletSettings(Map<String, String> config, Permissions permissions) {
+    public ServletSettings(OAuthAwareConfigProvider configProvider, Permissions permissions) {
         this.config = config;
         this.permissions = permissions;
     }
 
-    public Map<String, String> config() {
+    public OAuthAwareConfigProvider config() {
         return config;
     }
 
@@ -47,6 +47,7 @@ public final class ServletSettings {
     public static final class Permissions {
         Network network;
         FileSystem filesystem;
+        boolean oauthClient;
 
         Permissions() {}
 
@@ -63,25 +64,31 @@ public final class ServletSettings {
             return filesystem;
         }
 
+        public boolean oauthClient() {
+            return oauthClient;
+        }
+
         @Override
         public boolean equals(Object obj) {
             if (obj == this) return true;
             if (obj == null || obj.getClass() != this.getClass()) return false;
             var that = (Permissions) obj;
             return Objects.equals(this.network, that.network) &&
-                    Objects.equals(this.filesystem, that.filesystem);
+                    Objects.equals(this.filesystem, that.filesystem) &&
+                    this.oauthClient == that.oauthClient;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(network, filesystem);
+            return Objects.hash(network, filesystem, oauthClient);
         }
 
         @Override
         public String toString() {
             return "Permissions[" +
                     "network=" + network + ", " +
-                    "filesystem=" + filesystem + ']';
+                    "filesystem=" + filesystem +
+                    "oauthClient=" + oauthClient + ", " + ']';
         }
 
         public static final class Network {
