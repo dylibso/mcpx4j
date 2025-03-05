@@ -44,10 +44,13 @@ public class HttpClient {
         var headers = httpAdapter.headers();
         int maxAge = 0;
         long time = System.currentTimeMillis();
-        for (String cc : headers.get("Cache-Control")) {
-            var tok = new StringTokenizer(cc, ",=");
-            if (tok.nextToken().equals("max-age")) {
-                maxAge = Integer.parseInt(tok.nextToken());
+        List<String> cacheControl = headers.get("Cache-Control");
+        if (cacheControl != null) {
+            for (String cc : cacheControl) {
+                var tok = new StringTokenizer(cc, ",=");
+                if (tok.nextToken().equals("max-age")) {
+                    maxAge = Integer.parseInt(tok.nextToken());
+                }
             }
         }
 

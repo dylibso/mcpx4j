@@ -3,7 +3,6 @@ package com.dylibso.mcpx4j.core.builtins;
 import com.dylibso.mcpx4j.core.HttpClient;
 import com.dylibso.mcpx4j.core.JsonDecoder;
 import com.dylibso.mcpx4j.core.McpxServlet;
-import com.dylibso.mcpx4j.core.OAuthAwareConfigProvider;
 import com.dylibso.mcpx4j.core.ServletDescriptor;
 import com.dylibso.mcpx4j.core.ServletInstall;
 import com.dylibso.mcpx4j.core.ServletSettings;
@@ -20,7 +19,7 @@ public class McpRunServlet extends McpxServlet {
                                 OffsetDateTime.now(),
                                 OffsetDateTime.now(),
                                 new ServletDescriptor.Meta("", "")),
-                        new ServletSettings(new OAuthAwareConfigProvider(Map.of()), null)),
+                        new ServletSettings(Map.of(), null)),
                 Map.of("search_servlets", new McpRunSearchTool(client, jsonDecoder)));
     }
 }

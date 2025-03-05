@@ -100,7 +100,7 @@ public class Mcpx {
     private final HttpClient client;
     private final ConcurrentHashMap<String, McpxServletFactory> plugins;
     private final ConcurrentHashMap<String, ServletInstall> servletInstalls;
-    private final ConcurrentHashMap<String, ServletOAuth> oauthTokens;
+    private final ConcurrentHashMap<String, OAuthAwareConfigProvider> oauthTokens;
     private final String profileSlug;
     private final McpxServletOptions config;
     private final List<McpxServlet> builtIns;
@@ -120,44 +120,53 @@ public class Mcpx {
     public void refreshInstallations() {
         Map<String, ServletInstall> installations = client.installations(profileSlug);
         servletInstalls.putAll(installations);
-
         refreshOauth();
     }
 
     public void refreshOauth() {
         var time = System.currentTimeMillis();
         for (ServletInstall install : servletInstalls.values()) {
-            // FIXME check whether the servlet needs oauth at all
             String name = install.name();
             refreshOauth(install, name, time);
         }
     }
 
-    public ServletOAuth oauth(String name) {
-        return refreshOauth(servletInstalls.get(name), name, System.currentTimeMillis());
-    }
-
-    private ServletOAuth refreshOauth(ServletInstall install, String name, long now) {
-        ServletOAuth servletOAuth = oauthTokens.get(name);
-        if (servletOAuth == null || servletOAuth.maxTimestamp() > now) {
-            servletOAuth = client.oauth(profileSlug, install);
-            oauthTokens.put(name, servletOAuth);
+    public OAuthAwareConfigProvider refreshOauth(ServletInstall install, String name, long now) {
+        if (!install.settings().permissions().oauthClient()) {
+            return new OAuthAwareConfigProvider(install.settings.config());
+        }
+        OAuthAwareConfigProvider servletOAuth = oauthTokens.get(name);
+        if (servletOAuth == null) {
+            var oAuth = client.oauth(profileSlug, install);
+            OAuthAwareConfigProvider configProvider =
+                    new OAuthAwareConfigProvider(install.settings().config());
+            configProvider.updateOAuth(oAuth);
+            oauthTokens.put(name, configProvider);
+        } else if (servletOAuth.oAuth().maxTimestamp() > now) {
+            var oAuth = client.oauth(profileSlug, install);
+            servletOAuth.updateOAuth(oAuth);
         }
         return servletOAuth;
+    }
+
+    private OAuthAwareConfigProvider oauth(String name) {
+        return refreshOauth(servletInstalls.get(name), name, System.currentTimeMillis());
     }
 
     public McpxServletFactory get(String name) {
         if (!plugins.containsKey(name)) {
             var install = servletInstalls.get(name);
             var bytes = client.fetch(install);
-            plugins.put(name, McpxServletFactory.create(bytes, name, install, config, jsonDecoder));
+            var oauth = this.oauth(name);
+            plugins.put(name, McpxServletFactory.create(bytes, name, install, oauth, config, jsonDecoder));
         } else {
             // Check if the plugin has been updated
             var install = servletInstalls.get(name);
             McpxServletFactory mcpxServletFactory = plugins.get(name);
             if (install.servlet().createdAt().isAfter(mcpxServletFactory.install().servlet().createdAt())) {
                 var bytes = client.fetch(install);
-                plugins.put(name, McpxServletFactory.create(bytes, name, install, config, jsonDecoder));
+                var oauth = this.oauth(name);
+                plugins.put(name, McpxServletFactory.create(bytes, name, install, oauth, config, jsonDecoder));
             }
         }
         return plugins.get(name);

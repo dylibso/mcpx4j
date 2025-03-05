@@ -5,17 +5,17 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class ServletSettings {
-    private OAuthAwareConfigProvider config;
+    private Map<String, String> config;
     private Permissions permissions;
 
     ServletSettings() {}
 
-    public ServletSettings(OAuthAwareConfigProvider configProvider, Permissions permissions) {
+    public ServletSettings(Map<String, String> config, Permissions permissions) {
         this.config = config;
         this.permissions = permissions;
     }
 
-    public OAuthAwareConfigProvider config() {
+    public Map<String, String> config() {
         return config;
     }
 
