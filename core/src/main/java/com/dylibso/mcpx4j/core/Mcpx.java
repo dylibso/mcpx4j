@@ -125,16 +125,23 @@ public class Mcpx {
 
     public void refreshOauth() {
         var time = System.currentTimeMillis();
-        for (ServletInstall install : servletInstalls.values()) {
-            String name = install.name();
-            refreshOauth(install, name, time);
+        servletInstalls.values().parallelStream()
+                .forEach(install -> refreshOauth(install, time));
+    }
+
+    public void refreshOauth(String name) {
+        var time = System.currentTimeMillis();
+        ServletInstall install = servletInstalls.get(name);
+        if (install != null) {
+            refreshOauth(install, time);
         }
     }
 
-    public OAuthAwareConfigProvider refreshOauth(ServletInstall install, String name, long now) {
+    OAuthAwareConfigProvider refreshOauth(ServletInstall install, long now) {
         if (!install.settings().permissions().oauthClient()) {
             return new OAuthAwareConfigProvider(install.settings.config());
         }
+        String name = install.name();
         OAuthAwareConfigProvider servletOAuth = oauthTokens.get(name);
         if (servletOAuth == null) {
             var oAuth = client.oauth(profileSlug, install);
@@ -149,24 +156,20 @@ public class Mcpx {
         return servletOAuth;
     }
 
-    private OAuthAwareConfigProvider oauth(String name) {
-        return refreshOauth(servletInstalls.get(name), name, System.currentTimeMillis());
-    }
-
     public McpxServletFactory get(String name) {
         if (!plugins.containsKey(name)) {
             var install = servletInstalls.get(name);
             var bytes = client.fetch(install);
-            var oauth = this.oauth(name);
-            plugins.put(name, McpxServletFactory.create(bytes, name, install, oauth, config, jsonDecoder));
+            var configProvider = this.refreshOauth(install, System.currentTimeMillis());
+            plugins.put(name, McpxServletFactory.create(bytes, name, install, configProvider, config, jsonDecoder));
         } else {
             // Check if the plugin has been updated
             var install = servletInstalls.get(name);
             McpxServletFactory mcpxServletFactory = plugins.get(name);
             if (install.servlet().createdAt().isAfter(mcpxServletFactory.install().servlet().createdAt())) {
                 var bytes = client.fetch(install);
-                var oauth = this.oauth(name);
-                plugins.put(name, McpxServletFactory.create(bytes, name, install, oauth, config, jsonDecoder));
+                var configProvider = this.refreshOauth(install, System.currentTimeMillis());
+                plugins.put(name, McpxServletFactory.create(bytes, name, install, configProvider, config, jsonDecoder));
             }
         }
         return plugins.get(name);
