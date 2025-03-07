@@ -47,13 +47,14 @@ public final class ServletSettings {
     public static final class Permissions {
         Network network;
         FileSystem filesystem;
-        boolean oauthClient;
+        boolean oauth_client;
 
         Permissions() {}
 
-        public Permissions(Network network, FileSystem filesystem) {
+        public Permissions(Network network, FileSystem filesystem, boolean oAuthClient) {
             this.network = network;
             this.filesystem = filesystem;
+            this.oauth_client = oAuthClient;
         }
 
         public Network network() {
@@ -64,8 +65,8 @@ public final class ServletSettings {
             return filesystem;
         }
 
-        public boolean oauthClient() {
-            return oauthClient;
+        public boolean oAuthClient() {
+            return oauth_client;
         }
 
         @Override
@@ -75,12 +76,12 @@ public final class ServletSettings {
             var that = (Permissions) obj;
             return Objects.equals(this.network, that.network) &&
                     Objects.equals(this.filesystem, that.filesystem) &&
-                    this.oauthClient == that.oauthClient;
+                    this.oauth_client == that.oauth_client;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(network, filesystem, oauthClient);
+            return Objects.hash(network, filesystem, oauth_client);
         }
 
         @Override
@@ -88,7 +89,7 @@ public final class ServletSettings {
             return "Permissions[" +
                     "network=" + network + ", " +
                     "filesystem=" + filesystem +
-                    "oauthClient=" + oauthClient + ", " + ']';
+                    "oauthClient=" + oauth_client + ", " + ']';
         }
 
         public static final class Network {

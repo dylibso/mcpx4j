@@ -36,7 +36,11 @@ class McpxIT {
             var mcpx = Mcpx.forApiKey("my-key")
                     .withBaseUrl(baseUrl)
                     .withProfile(profileId)
-                    .withJsonDecoder(jsonDecoder).build();
+                    .withJsonDecoder(jsonDecoder)
+                    .withServletOptions(
+                            McpxServletOptions.builder()
+                                    .withOAuthAutoRefresh().build())
+                    .build();
             mcpx.refreshInstallations();
             McpxServletFactory servletFactory = mcpx.get("fetch");
 

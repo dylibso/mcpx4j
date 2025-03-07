@@ -120,7 +120,9 @@ public class Mcpx {
     public void refreshInstallations() {
         Map<String, ServletInstall> installations = client.installations(profileSlug);
         servletInstalls.putAll(installations);
-        refreshOauth();
+        if (config.oAuthAutoRefresh) {
+            refreshOauth();
+        }
     }
 
     public void refreshOauth() {
@@ -138,7 +140,7 @@ public class Mcpx {
     }
 
     OAuthAwareConfigProvider refreshOauth(ServletInstall install, long now) {
-        if (!install.settings().permissions().oauthClient()) {
+        if (!install.settings().permissions().oAuthClient()) {
             return new OAuthAwareConfigProvider(install.settings.config());
         }
         String name = install.name();

@@ -48,7 +48,8 @@ class HttpClientIT {
                     Map.of("username", "foo"),
                     new ServletSettings.Permissions(
                             new ServletSettings.Permissions.Network("*.example.com"),
-                            new ServletSettings.Permissions.FileSystem(Map.of("/home/foo", "${HOME}"))
+                            new ServletSettings.Permissions.FileSystem(Map.of("/home/foo", "${HOME}")),
+                            true
                     )), settings);
         } finally {
             server.stop(0);
