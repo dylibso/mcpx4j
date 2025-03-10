@@ -5,16 +5,16 @@ import java.util.Objects;
 
 public class ServletDescriptor {
     String slug;
-    OffsetDateTime createdAt;
-    OffsetDateTime modifiedAt;
+    OffsetDateTime created_at;
+    OffsetDateTime modified_at;
     Meta meta;
 
     ServletDescriptor() {}
 
     public ServletDescriptor(String slug, OffsetDateTime createdAt, OffsetDateTime modifiedAt, Meta meta) {
         this.slug = slug;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
+        this.created_at = createdAt;
+        this.modified_at = modifiedAt;
         this.meta = meta;
     }
 
@@ -23,11 +23,11 @@ public class ServletDescriptor {
     }
 
     public OffsetDateTime createdAt() {
-        return createdAt;
+        return created_at;
     }
 
     public OffsetDateTime modifiedAt() {
-        return modifiedAt;
+        return modified_at;
     }
 
     public Meta meta() {
@@ -38,20 +38,20 @@ public class ServletDescriptor {
     public boolean equals(Object o) {
         if (!(o instanceof ServletDescriptor)) return false;
         ServletDescriptor that = (ServletDescriptor) o;
-        return Objects.equals(slug, that.slug) && Objects.equals(createdAt, that.createdAt) && Objects.equals(modifiedAt, that.modifiedAt);
+        return Objects.equals(slug, that.slug) && Objects.equals(created_at, that.created_at) && Objects.equals(modified_at, that.modified_at);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(slug, createdAt, modifiedAt);
+        return Objects.hash(slug, created_at, modified_at);
     }
 
     @Override
     public String toString() {
         return "ServletDescriptor{" +
                 "slug='" + slug + '\'' +
-                ", createdAt=" + createdAt +
-                ", modifiedAt=" + modifiedAt +
+                ", createdAt=" + created_at +
+                ", modifiedAt=" + modified_at +
                 '}';
     }
 

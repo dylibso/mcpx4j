@@ -9,4 +9,6 @@ public interface JsonDecoder {
     List<McpxToolDescriptor> toolDescriptors(byte[] bytes);
 
     String parseSearchRequest(byte[] bytes);
+
+    ServletOAuthInfo oauth(byte[] bytes);
 }

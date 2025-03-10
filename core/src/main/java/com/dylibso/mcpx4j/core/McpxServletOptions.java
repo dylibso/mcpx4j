@@ -6,11 +6,13 @@ import org.extism.sdk.chicory.HttpConfig;
 
 public class McpxServletOptions {
     final boolean aot;
+    public boolean oAuthAutoRefresh;
     final HttpConfig chicoryHttpConfig;
     final Logger logger;
 
-    McpxServletOptions(boolean aot, HttpConfig chicoryHttpConfig, Logger logger) {
+    McpxServletOptions(boolean aot, boolean oAuthAutoRefresh, HttpConfig chicoryHttpConfig, Logger logger) {
         this.aot = aot;
+        this.oAuthAutoRefresh = oAuthAutoRefresh;
         this.chicoryHttpConfig = chicoryHttpConfig;
         this.logger = logger;
     }
@@ -21,6 +23,7 @@ public class McpxServletOptions {
 
     public static class Builder {
         boolean aot;
+        boolean oAuthAutoRefresh;
         HttpConfig chicoryHttpConfig;
         Logger chicoryLogger;
 
@@ -28,6 +31,10 @@ public class McpxServletOptions {
 
         public Builder withAot() {
             this.aot = true;
+            return this;
+        }
+        public Builder withOAuthAutoRefresh() {
+            this.oAuthAutoRefresh = true;
             return this;
         }
 
@@ -44,6 +51,7 @@ public class McpxServletOptions {
         public McpxServletOptions build() {
             return new McpxServletOptions(
                     aot,
+                    oAuthAutoRefresh,
                     chicoryHttpConfig == null? HttpConfig.defaultConfig() : chicoryHttpConfig,
                     chicoryLogger == null? new SystemLogger() : chicoryLogger);
         }

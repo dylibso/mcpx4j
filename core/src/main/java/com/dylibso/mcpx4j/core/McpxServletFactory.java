@@ -1,6 +1,7 @@
 package com.dylibso.mcpx4j.core;
 
 import com.dylibso.chicory.wasi.WasiOptions;
+import org.extism.sdk.chicory.ConfigProvider;
 import org.extism.sdk.chicory.ExtismHostFunction;
 import org.extism.sdk.chicory.ExtismValType;
 import org.extism.sdk.chicory.Manifest;
@@ -51,10 +52,10 @@ public class McpxServletFactory {
         return new McpxServlet(this.install.name(), this.install, tools);
     }
 
-    public static McpxServletFactory create(byte[] bytes, String name, ServletInstall install, McpxServletOptions config, JsonDecoder jsonDecoder) {
+    public static McpxServletFactory create(byte[] bytes, String name, ServletInstall install, ConfigProvider configProvider, McpxServletOptions config, JsonDecoder jsonDecoder) {
         var wasm = ManifestWasm.fromBytes(bytes).build();
         Manifest.Options opts = new Manifest.Options()
-                .withConfig(install.settings().config())
+                .withConfigProvider(configProvider)
                 .withAllowedHosts(install.settings().permissions().network().domains())
                 .withHttpConfig(config.chicoryHttpConfig)
                 .withWasi(WasiOptions.builder()

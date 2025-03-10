@@ -6,6 +6,7 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 
 public class MockServer {
     static HttpServer installations(InetSocketAddress address) throws IOException {
@@ -21,6 +22,27 @@ public class MockServer {
 
         server.createContext("/api/profiles/~/default/installations", httpHandler);
         server.createContext("/api/profiles/foo/bar/installations", httpHandler);
+        server.createContext("/api/profiles/~/default/installations/fetch/oauth", t -> {
+            // {
+            //   "oauth_info": {
+            //      "config_name": "OAUTH_TOKEN",
+            //      "access_token": "ABCDFGHILMN123456789",
+            //   }
+            // }
+
+            byte[] resp = ("{\n" +
+                    "  \"oauth_info\": {\n" +
+                    "     \"config_name\": \"OAUTH_TOKEN\",\n" +
+                    "     \"access_token\": \"ABCDFGHILMN123456789\"\n" +
+                    "  }\n" +
+                    "}").getBytes(StandardCharsets.UTF_8);
+
+            t.sendResponseHeaders(200, resp.length);
+            OutputStream responseBody = t.getResponseBody();
+
+            responseBody.write(resp);
+            responseBody.close();
+        });
 
         return server;
     }

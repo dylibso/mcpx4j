@@ -15,7 +15,7 @@
         <dependency>
             <groupId>org.extism.sdk</groupId>
             <artifactId>chicory-sdk</artifactId>
-            <version>${mcpx4j.version}</version>
+            <version>${chicory-sdk.version}</version>
         </dependency>
 
         <dependency>
@@ -24,7 +24,12 @@
             <version>${jackson-databind.version}</version>
             <optional>true</optional>
         </dependency>
-
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson-databind.version}</version>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.parsson</groupId>
             <artifactId>parsson</artifactId>

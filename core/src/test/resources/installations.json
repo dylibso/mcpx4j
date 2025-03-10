@@ -4,6 +4,7 @@
       "name": "fetch",
       "settings": {
         "permissions": {
+          "oauth_client": true,
           "network": {
             "domains": [
               "*.example.com"
