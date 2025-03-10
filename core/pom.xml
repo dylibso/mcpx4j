@@ -15,7 +15,7 @@
         <dependency>
             <groupId>org.extism.sdk</groupId>
             <artifactId>chicory-sdk</artifactId>
-            <version>${mcpx4j.version}</version>
+            <version>${chicory-sdk.version}</version>
         </dependency>
 
         <dependency>
