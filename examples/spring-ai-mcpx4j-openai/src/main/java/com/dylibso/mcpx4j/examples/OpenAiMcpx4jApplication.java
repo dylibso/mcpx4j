@@ -1,7 +1,7 @@
 package com.dylibso.mcpx4j.examples;
 
 import com.dylibso.mcpx4j.core.Mcpx;
-import com.dylibso.mcpx4j.core.McpxServlet;
+import com.dylibso.mcpx4j.core.McpxServletFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -11,9 +11,12 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Collection;
+import java.util.logging.Logger;
 
 @SpringBootApplication
 public class OpenAiMcpx4jApplication {
+
+    private final static Logger LOGGER = Logger.getLogger("mcpx");
 
     public static void main(String[] args) {
         SpringApplication.run(OpenAiMcpx4jApplication.class, args);
@@ -42,7 +45,7 @@ public class OpenAiMcpx4jApplication {
         // such configuration.
         mcpx.refreshInstallations();
         // Instantiate each servlet and expose it as a `FunctionCallback`
-        var functions = functionsFromMcpxServlets(mcpx.servlets());
+        var functions = functionsFromMcpxServlets(mcpx.servletFactories());
 
         return args -> {
             var chatClient = chatClientBuilder
@@ -85,10 +88,15 @@ Your responses should focus on results rather than asking questions. Only ask th
 
     // Converts the servlets into FunctionCallbacks.
     McpxToolFunctionCallback[] functionsFromMcpxServlets(
-            Collection<McpxServlet> servlets) {
+            Collection<McpxServletFactory> servlets) {
         return servlets.stream()
+                .peek(s -> LOGGER.info("Initializing Servlet " + s.name()))
+                .map(McpxServletFactory::create)
+                .peek(s -> LOGGER.info("Initialized Servlet " + s.name()))
                 .flatMap(servlet -> servlet.tools().values().stream())
                 .map(McpxToolFunctionCallback::new)
                 .toArray(McpxToolFunctionCallback[]::new);
     }
+
+
 }

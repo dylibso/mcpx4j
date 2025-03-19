@@ -2,6 +2,7 @@ package com.dylibso.mcpx4j.examples;
 
 import com.dylibso.mcpx4j.core.Mcpx;
 import com.dylibso.mcpx4j.core.McpxServlet;
+import com.dylibso.mcpx4j.core.McpxServletFactory;
 import com.dylibso.mcpx4j.core.McpxTool;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class LangChain4jOpenAIMcpx4jMain {
     public static void main(String[] args) throws IOException {
@@ -46,9 +48,9 @@ public class LangChain4jOpenAIMcpx4jMain {
         mcpx.refreshInstallations();
         // Instantiate each servlet and expose it as a
         // `ToolSpecification`, `ToolExecutor` pair.
-        var servlets = mcpx.servlets();
+        var servletFactories = mcpx.servletFactories();
         Map<ToolSpecification, ToolExecutor> tools =
-                toolsFromMcpxServlets(servlets);
+                toolsFromMcpxServlets(servletFactories);
 
         ChatLanguageModel chatLanguageModel =
                 OpenAiChatModel.builder()
@@ -77,11 +79,15 @@ public class LangChain4jOpenAIMcpx4jMain {
     }
 
     private static Map<ToolSpecification, ToolExecutor> toolsFromMcpxServlets(
-            Collection<McpxServlet> servlets) throws JsonProcessingException {
+            Collection<McpxServletFactory> factories) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 
         Map<ToolSpecification, ToolExecutor> tools = new HashMap<>();
-        for (McpxServlet servlet : servlets) {
+        for (var factory : factories) {
+            Logger logger = Logger.getLogger(factory.name());
+            logger.info("Initializing");
+            var servlet = factory.create();
+            logger.info("initialized");
             for (McpxTool tool : servlet.tools().values()) {
                 JsonNode schema = mapper.readTree(tool.inputSchema());
                 JsonSchemaElement jsonSchemaElement =
