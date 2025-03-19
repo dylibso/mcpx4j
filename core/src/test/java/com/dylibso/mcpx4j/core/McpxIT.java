@@ -42,7 +42,7 @@ class McpxIT {
                                     .withOAuthAutoRefresh().build())
                     .build();
             mcpx.refreshInstallations();
-            McpxServletFactory servletFactory = mcpx.get("fetch");
+            var servletFactory = mcpx.get("fetch");
 
             assertNotNull(servletFactory);
             McpxServlet servlet = servletFactory.create();

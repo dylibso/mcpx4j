@@ -1,6 +1,7 @@
 package com.dylibso.mcpx4j.core;
 
 import com.dylibso.mcpx4j.core.builtins.McpRunServlet;
+import com.dylibso.mcpx4j.core.builtins.McpxBuiltInServlet;
 import org.extism.sdk.chicory.HttpClientAdapter;
 import org.extism.sdk.chicory.JdkHttpClientAdapter;
 
@@ -9,10 +10,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 public class Mcpx {
     public static class Builder {
@@ -98,12 +101,12 @@ public class Mcpx {
     }
 
     private final HttpClient client;
-    private final ConcurrentHashMap<String, McpxServletFactory> plugins;
+    private final ConcurrentHashMap<String, McpxWasmServletFactory> plugins;
     private final ConcurrentHashMap<String, ServletInstall> servletInstalls;
     private final ConcurrentHashMap<String, OAuthAwareConfigProvider> oauthTokens;
     private final String profileSlug;
     private final McpxServletOptions config;
-    private final List<McpxServlet> builtIns;
+    private final List<McpxBuiltInServlet> builtIns;
     private final JsonDecoder jsonDecoder;
 
     Mcpx(String apiKey, String baseUrl, String profileSlug, JsonDecoder jsonDecoder, HttpClientAdapter httpClientAdapter, McpxServletOptions config) {
@@ -163,15 +166,15 @@ public class Mcpx {
             var install = servletInstalls.get(name);
             var bytes = client.fetch(install);
             var configProvider = this.refreshOauth(install, System.currentTimeMillis());
-            plugins.put(name, McpxServletFactory.create(bytes, name, install, configProvider, config, jsonDecoder));
+            plugins.put(name, McpxWasmServletFactory.create(bytes, name, install, configProvider, config, jsonDecoder));
         } else {
             // Check if the plugin has been updated
             var install = servletInstalls.get(name);
-            McpxServletFactory mcpxServletFactory = plugins.get(name);
+            var mcpxServletFactory = plugins.get(name);
             if (install.servlet().createdAt().isAfter(mcpxServletFactory.install().servlet().createdAt())) {
                 var bytes = client.fetch(install);
                 var configProvider = this.refreshOauth(install, System.currentTimeMillis());
-                plugins.put(name, McpxServletFactory.create(bytes, name, install, configProvider, config, jsonDecoder));
+                plugins.put(name, McpxWasmServletFactory.create(bytes, name, install, configProvider, config, jsonDecoder));
             }
         }
         return plugins.get(name);
@@ -180,11 +183,23 @@ public class Mcpx {
 
 
     public Collection<McpxServlet> servlets() {
-        var servlets = new ArrayList<>(builtIns);
+        var servlets = new ArrayList<McpxServlet>(builtIns);
         for (var name : servletInstalls.keySet()) {
             servlets.add(this.get(name).create());
         }
         return servlets;
     }
+
+    public Collection<McpxServletFactory> servletFactories() {
+        var servlets = new ArrayList<McpxServletFactory>();
+        for (var builtIn : builtIns) {
+            servlets.add(builtIn.asFactory());
+        }
+        for (var name : servletInstalls.keySet()) {
+            servlets.add(this.get(name));
+        }
+        return servlets;
+    }
+
 
 }
