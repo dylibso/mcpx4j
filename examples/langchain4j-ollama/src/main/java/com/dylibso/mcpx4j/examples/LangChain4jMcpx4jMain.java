@@ -55,7 +55,7 @@ public class LangChain4jMcpx4jMain {
         ChatLanguageModel chatLanguageModel =
                 OllamaChatModel.builder()
                         .baseUrl("http://localhost:11434")
-                        .modelName("fomenks/gemma3-tools:1b")
+                        .modelName("llama3.2")
                         .timeout(Duration.ofMinutes(5))
                         .build();
 
