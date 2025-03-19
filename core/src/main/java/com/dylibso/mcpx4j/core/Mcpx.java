@@ -147,10 +147,10 @@ public class Mcpx {
         OAuthAwareConfigProvider servletOAuth = oauthTokens.get(name);
         if (servletOAuth == null) {
             var oAuth = client.oauth(profileSlug, install);
-            OAuthAwareConfigProvider configProvider =
+            servletOAuth =
                     new OAuthAwareConfigProvider(install.settings().config());
-            configProvider.updateOAuth(oAuth);
-            oauthTokens.put(name, configProvider);
+            servletOAuth.updateOAuth(oAuth);
+            oauthTokens.put(name, servletOAuth);
         } else if (servletOAuth.oAuth().maxTimestamp() > now) {
             var oAuth = client.oauth(profileSlug, install);
             servletOAuth.updateOAuth(oAuth);
