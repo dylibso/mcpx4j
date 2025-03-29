@@ -27,9 +27,11 @@ public class OAuthAwareConfigProvider implements ConfigProvider {
 
     @Override
     public String get(String key) {
-        ServletOAuthInfo info = oAuth.info();
-        if (info.configName().equals(key)) {
-            return info.accessToken();
+        if (oAuth != null) {
+            ServletOAuthInfo info = oAuth.info();
+            if (info.configName().equals(key)) {
+                return info.accessToken();
+            }
         }
         return map.get(key);
     }

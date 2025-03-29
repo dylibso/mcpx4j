@@ -34,6 +34,11 @@ public class McpxWasmServletFactory implements McpxServletFactory {
         return install;
     }
 
+    @Override
+    public String schema() {
+        return install.servlet.meta.schema;
+    }
+
     public Manifest manifest() {
         return manifest;
     }

@@ -117,14 +117,14 @@ public class Mcpx {
         this.plugins = new ConcurrentHashMap<>();
         this.servletInstalls = new ConcurrentHashMap<>();
         this.oauthTokens = new ConcurrentHashMap<>();
-        this.builtIns = List.of(new McpRunServlet(client, jsonDecoder));
+        this.builtIns = List.of(/*new McpRunServlet(client, jsonDecoder)*/);
     }
 
     public void refreshInstallations() {
         Map<String, ServletInstall> installations = client.installations(profileSlug);
         servletInstalls.putAll(installations);
         if (config.oAuthAutoRefresh) {
-            refreshOauth();
+//            refreshOauth();
         }
     }
 
@@ -143,22 +143,22 @@ public class Mcpx {
     }
 
     OAuthAwareConfigProvider refreshOauth(ServletInstall install, long now) {
-        if (!install.settings().permissions().oAuthClient()) {
             return new OAuthAwareConfigProvider(install.settings.config());
-        }
-        String name = install.name();
-        OAuthAwareConfigProvider servletOAuth = oauthTokens.get(name);
-        if (servletOAuth == null) {
-            var oAuth = client.oauth(profileSlug, install);
-            servletOAuth =
-                    new OAuthAwareConfigProvider(install.settings().config());
-            servletOAuth.updateOAuth(oAuth);
-            oauthTokens.put(name, servletOAuth);
-        } else if (servletOAuth.oAuth().maxTimestamp() > now) {
-            var oAuth = client.oauth(profileSlug, install);
-            servletOAuth.updateOAuth(oAuth);
-        }
-        return servletOAuth;
+//        if (!install.settings().permissions().oAuthClient()) {
+//        }
+//        String name = install.name();
+//        OAuthAwareConfigProvider servletOAuth = oauthTokens.get(name);
+//        if (servletOAuth == null) {
+//            var oAuth = client.oauth(profileSlug, install);
+//            servletOAuth =
+//                    new OAuthAwareConfigProvider(install.settings().config());
+//            servletOAuth.updateOAuth(oAuth);
+//            oauthTokens.put(name, servletOAuth);
+//        } else if (servletOAuth.oAuth().maxTimestamp() > now) {
+//            var oAuth = client.oauth(profileSlug, install);
+//            servletOAuth.updateOAuth(oAuth);
+//        }
+//        return servletOAuth;
     }
 
     public McpxServletFactory get(String name) {
