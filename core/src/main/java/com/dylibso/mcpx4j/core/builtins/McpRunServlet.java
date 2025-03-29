@@ -2,24 +2,25 @@ package com.dylibso.mcpx4j.core.builtins;
 
 import com.dylibso.mcpx4j.core.HttpClient;
 import com.dylibso.mcpx4j.core.JsonDecoder;
-import com.dylibso.mcpx4j.core.McpxServlet;
-import com.dylibso.mcpx4j.core.ServletDescriptor;
-import com.dylibso.mcpx4j.core.ServletInstall;
-import com.dylibso.mcpx4j.core.ServletSettings;
+import com.dylibso.mcpx4j.core.McpxTool;
 
-import java.time.OffsetDateTime;
 import java.util.Map;
 
-public class McpRunServlet extends McpxServlet {
+public class McpRunServlet implements McpxBuiltInServlet {
+
+    private final McpRunSearchTool searchTool;
 
     public McpRunServlet(HttpClient client, JsonDecoder jsonDecoder) {
-        super("mcp_run",
-                new ServletInstall("mcp_run",
-                        new ServletDescriptor("mcp_run",
-                                OffsetDateTime.now(),
-                                OffsetDateTime.now(),
-                                new ServletDescriptor.Meta("", "")),
-                        new ServletSettings(Map.of(), null)),
-                Map.of("search_servlets", new McpRunSearchTool(client, jsonDecoder)));
+        this.searchTool = new McpRunSearchTool(client, jsonDecoder);
+    }
+
+    @Override
+    public String name() {
+        return "mcp_run";
+    }
+
+    @Override
+    public Map<String, McpxTool> tools() {
+        return Map.of("search_servlets", searchTool);
     }
 }

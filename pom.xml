@@ -64,7 +64,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <chicory-sdk.version>0.1.3</chicory-sdk.version>
+        <chicory-sdk.version>0.1.4</chicory-sdk.version>
         <mcpx4j.version>999-SNAPSHOT</mcpx4j.version>
         <junit-jupiter.version>5.11.0</junit-jupiter.version>
         <jakarta.json-api.version>2.1.3</jakarta.json-api.version>
