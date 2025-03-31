@@ -8,6 +8,7 @@ import org.extism.sdk.chicory.Manifest;
 import org.extism.sdk.chicory.ManifestWasm;
 import org.extism.sdk.chicory.Plugin;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;

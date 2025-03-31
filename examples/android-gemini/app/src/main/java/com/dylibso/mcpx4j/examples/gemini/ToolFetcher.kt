@@ -32,8 +32,9 @@ object ToolFetcher {
         mcpx.refreshInstallations()
 
         // Extract the metadata of each `McpxTool` into a `FunctionDeclaration`
+        val factories = mcpx.servletFactories().filter { !it.name().contains("telegram") }
         val functionDeclarations =
-            mcpx.servletFactories().toList()
+            factories.toList()
                 .associate { it.name() to toFunctionDeclarationList(it.schema()) }
         // Create a map name -> McpxServlet name for quicker lookup
         val mcpxTools =
