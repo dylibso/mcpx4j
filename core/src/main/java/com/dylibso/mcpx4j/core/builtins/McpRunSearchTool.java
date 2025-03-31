@@ -15,6 +15,7 @@ public class McpRunSearchTool extends McpxBuiltInTool {
                     "If no tools are found, suggest the user create one at mcp.run.\n" +
                     "\n" +
                     "Search proactively - don't wait for users to ask about tools. Anytime you're helping with a task that external code could enhance, do a search.\n";
+    //language=json
     private static final String INPUT_SCHEMA =
             "{\n" +
                     "      \"type\": \"object\",\n" +

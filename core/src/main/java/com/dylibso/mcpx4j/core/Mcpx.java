@@ -117,7 +117,7 @@ public class Mcpx {
         this.plugins = new ConcurrentHashMap<>();
         this.servletInstalls = new ConcurrentHashMap<>();
         this.oauthTokens = new ConcurrentHashMap<>();
-        this.builtIns = List.of(new McpRunServlet(client, jsonDecoder));
+        this.builtIns = List.of(/*new McpRunServlet(client, jsonDecoder)*/);
     }
 
     public void refreshInstallations() {

@@ -8,6 +8,7 @@ import org.extism.sdk.chicory.Manifest;
 import org.extism.sdk.chicory.ManifestWasm;
 import org.extism.sdk.chicory.Plugin;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -34,6 +35,11 @@ public class McpxWasmServletFactory implements McpxServletFactory {
         return install;
     }
 
+    @Override
+    public String schema() {
+        return install.servlet.meta.schema;
+    }
+
     public Manifest manifest() {
         return manifest;
     }
@@ -48,8 +54,7 @@ public class McpxWasmServletFactory implements McpxServletFactory {
                 .withHostFunctions(DEPRECATED_CONFIG_GET.get())
                 .build();
 
-        var bytes = plugin.call("describe", new byte[0]);
-        var descriptors = jsonDecoder.toolDescriptors(bytes);
+        var descriptors = jsonDecoder.toolDescriptors(schema().getBytes(StandardCharsets.UTF_8));
         Map<String, McpxTool> tools = descriptors.stream()
                 .map(descriptor -> new McpxPluginTool(plugin, descriptor))
                 .collect(Collectors.toMap(McpxPluginTool::name, tool -> tool));

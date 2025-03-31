@@ -2,10 +2,18 @@ package com.dylibso.mcpx4j.core;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
+import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.IOException;
@@ -22,7 +30,26 @@ public class JacksonDecoder implements JsonDecoder {
         this.mapper = new ObjectMapper()
                 .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
                 .configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .registerModule(new JavaTimeModule());
+                .registerModule(new JavaTimeModule())
+                .addHandler(new DeserializationProblemHandler() {
+                    @Override
+                    public Object handleUnexpectedToken(DeserializationContext ctxt,
+                                                        JavaType targetType,
+                                                        JsonToken t,
+                                                        JsonParser p,
+                                                        String failureMsg) throws IOException {
+                        // Check if we're handling the schema field in ServletDescriptor.Meta
+                        if (p.getCurrentName() != null &&
+                                p.getCurrentName().equals("schema") &&
+                                p.getParsingContext().getParent().getCurrentName() != null &&
+                                p.getParsingContext().getParent().getCurrentValue() instanceof ServletDescriptor.Meta) {
+                            // Return the raw JSON as a string
+                            return p.readValueAsTree().toString();
+                        }
+                        // Otherwise use default handling
+                        return NOT_HANDLED;
+                    }
+                });
     }
 
     @Override
@@ -88,6 +115,43 @@ public class JacksonDecoder implements JsonDecoder {
                 .get("q").asText();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        }
+    }
+
+    private static class ServletDescriptorMetaModule extends Module {
+        @Override
+        public String getModuleName() {
+            return "ServletDescriptorMetaModule";
+        }
+
+        @Override
+        public Version version() {
+            return Version.unknownVersion();
+        }
+
+        @Override
+        public void setupModule(SetupContext setupContext) {
+            // keep ServletDescriptor.Meta.schema as string
+            setupContext.addDeserializationProblemHandler(new DeserializationProblemHandler() {
+                @Override
+                public Object handleUnexpectedToken(DeserializationContext ctxt,
+                                                    JavaType targetType,
+                                                    JsonToken t,
+                                                    JsonParser p,
+                                                    String failureMsg) throws IOException {
+                    // Check if we're handling the schema field in ServletDescriptor.Meta
+                    if (p.getCurrentName() != null &&
+                            p.getCurrentName().equals("schema") &&
+                            p.getParsingContext().getParent().getCurrentName() != null &&
+                            p.getParsingContext().getParent().getCurrentValue() instanceof ServletDescriptor.Meta) {
+                        // Return the raw JSON as a string
+                        return p.getValueAsString();
+                    }
+                    // Otherwise use default handling
+                    return NOT_HANDLED;
+                }
+            });
+
         }
     }
 }

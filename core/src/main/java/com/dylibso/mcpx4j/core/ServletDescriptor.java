@@ -66,8 +66,8 @@ public class ServletDescriptor {
             this.lastContentAddress = lastContentAddress;
         }
 
-        void setSchema(Object schema) {
-            this.schema = schema.toString();
+        void setSchema(String schema) {
+            this.schema = schema;
         }
 
         public String schema() {

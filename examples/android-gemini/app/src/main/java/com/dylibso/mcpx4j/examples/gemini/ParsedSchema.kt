@@ -8,6 +8,10 @@ data class ParsedSchema(val parameters: List<Schema<*>>, val requiredParameters:
         fun parse(schema: String): ParsedSchema {
             val parsedJsonSchema = JSONObject(schema)
 
+            return parseObject(parsedJsonSchema)
+        }
+
+        fun parseObject(parsedJsonSchema: JSONObject): ParsedSchema {
             // Handle scalar types at the top level
             if (parsedJsonSchema.has("type") && !parsedJsonSchema.has("properties")) {
                 val type = parsedJsonSchema.getString("type")
@@ -37,7 +41,10 @@ data class ParsedSchema(val parameters: List<Schema<*>>, val requiredParameters:
 
             for (key in properties.keys()) {
                 val property = properties.getJSONObject(key)
-                val type = property.getString("type")
+                var type = "object"
+                if (property.has("type")) {
+                    type = property.getString("type")
+                }
                 val description = property.optString("description", type)
 
                 val schema = createSchemaForType(type, key, description, property)

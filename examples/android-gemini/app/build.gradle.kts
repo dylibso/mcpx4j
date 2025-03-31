@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.generativeai)
     implementation(libs.mcpx4j)
     implementation(libs.jackson.databind)
+    implementation(libs.jackson.datatype.jsr310)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
