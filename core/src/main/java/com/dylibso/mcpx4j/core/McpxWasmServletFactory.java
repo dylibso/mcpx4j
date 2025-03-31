@@ -54,8 +54,7 @@ public class McpxWasmServletFactory implements McpxServletFactory {
                 .withHostFunctions(DEPRECATED_CONFIG_GET.get())
                 .build();
 
-        var bytes = plugin.call("describe", new byte[0]);
-        var descriptors = jsonDecoder.toolDescriptors(bytes);
+        var descriptors = jsonDecoder.toolDescriptors(schema().getBytes(StandardCharsets.UTF_8));
         Map<String, McpxTool> tools = descriptors.stream()
                 .map(descriptor -> new McpxPluginTool(plugin, descriptor))
                 .collect(Collectors.toMap(McpxPluginTool::name, tool -> tool));

@@ -16,15 +16,15 @@ object ToolFetcher {
                         // Setup an HTTP client compatible with Android
                         // on the Chicory runtime
                         .withChicoryHttpConfig(HttpConfig.builder()
-                            .withJsonCodec({ JacksonJsonCodec() })
-                            .withClientAdapter({ HttpUrlConnectionClientAdapter() }).build())
+                            .withJsonCodec { JacksonJsonCodec() }
+                            .withClientAdapter { HttpUrlConnectionClientAdapter() }.build())
                         // Configure an alternative, Android-specific logger
                         .withChicoryLogger(AndroidLogger("mcpx4j-runtime"))
                         .build())
                 // Configure also the MCPX4J HTTP client to use
                 // the Android-compatible implementation
                 .withHttpClientAdapter(HttpUrlConnectionClientAdapter())
-                .withProfile("telegram")
+                .withProfile(BuildConfig.profile)
                 .build()
 
         // Refresh once the list of installations.
@@ -32,7 +32,7 @@ object ToolFetcher {
         mcpx.refreshInstallations()
 
         // Extract the metadata of each `McpxTool` into a `FunctionDeclaration`
-        val factories = mcpx.servletFactories().filter { !it.name().contains("telegram") }
+        val factories = mcpx.servletFactories()
         val functionDeclarations =
             factories.toList()
                 .associate { it.name() to toFunctionDeclarationList(it.schema()) }
@@ -43,28 +43,31 @@ object ToolFetcher {
     }
 
     private fun toFunctionDeclarationList(toolSchemas: String): List<FunctionDeclaration> {
-        val tools = JSONObject(toolSchemas).getJSONArray("tools")
+        val schema = JSONObject(toolSchemas)
+        if (!schema.has("tools")) {
+            val parsedSchema = ParsedSchema.parseObject(schema.getJSONObject("inputSchema"))
+            return listOf(defineFunction(
+                name = schema.getString("name"),
+                description = schema.getString("description"),
+                parameters = parsedSchema.parameters,
+                requiredParameters = parsedSchema.requiredParameters)
+            )
+        }
+        val tools = schema.getJSONArray("tools")
         val declarations = mutableListOf<FunctionDeclaration>()
         for (i in 0..<tools.length()) {
             val tool = tools.getJSONObject(i)
-            val parsedSchema = ParsedSchema.parseObject(tool.getJSONObject("inputSchema"))
-            val f = defineFunction(
-                name = tool.getString("name"),
-                description = tool.getString("description"),
-                parameters = parsedSchema.parameters,
-                requiredParameters = parsedSchema.requiredParameters
-            )
+            val f = toFunctionDeclaration(tool)
             declarations.add(f)
         }
         return declarations;
     }
 
-
-    private fun toFunctionDeclaration(tool: McpxTool): FunctionDeclaration {
-        val parsedSchema = ParsedSchema.parse(tool.inputSchema())
+    private fun toFunctionDeclaration(json: JSONObject): FunctionDeclaration {
+        val parsedSchema = ParsedSchema.parseObject(json.getJSONObject("inputSchema"))
         val f = defineFunction(
-            name = tool.name(),
-            description = tool.description(),
+            name = json.getString("name"),
+            description = json.getString("description"),
             parameters = parsedSchema.parameters,
             requiredParameters = parsedSchema.requiredParameters
         )
