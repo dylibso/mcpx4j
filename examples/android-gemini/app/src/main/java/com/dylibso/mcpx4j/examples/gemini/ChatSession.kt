@@ -1,5 +1,6 @@
 package com.dylibso.mcpx4j.examples.gemini
 
+import android.content.Context
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.Content
 import com.google.ai.client.generativeai.type.FunctionResponsePart
@@ -7,7 +8,7 @@ import com.google.ai.client.generativeai.type.GenerateContentResponse
 import com.google.ai.client.generativeai.type.Tool
 import com.google.ai.client.generativeai.type.content
 
-class ChatSession(private val functionRepository: FunctionRepository) {
+class ChatSession(private val context: Context, private val functionRepository: FunctionRepository) {
     private val generativeModel = GenerativeModel(
         // Use Gemini 2.0
         modelName = "gemini-2.0-flash-exp",

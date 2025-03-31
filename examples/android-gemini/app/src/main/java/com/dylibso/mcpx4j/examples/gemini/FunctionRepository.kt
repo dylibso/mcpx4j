@@ -10,7 +10,8 @@ import org.json.JSONObject
 data class FunctionRepository(
     val mcpx: Mcpx,
     val functionDeclarations: Map<String, FunctionDeclaration>,
-    val mcpxTools: Map<String, String>) {
+    val mcpxTools: Map<String, String>
+) {
 
     val servlets = object : LruCache<String, McpxServlet>(20) {
         override fun create(servletName: String): McpxServlet {
@@ -24,12 +25,15 @@ data class FunctionRepository(
             ?: return JSONObject(mapOf("result" to "$toolName is not a valid function"))
 
         val jargs = JSONObject(args)
-        val jsargs = JSONObject(mapOf(
-            "method" to "tools/call",
-            "params" to mapOf(
-                "name" to toolName,
-                "arguments" to jargs
-            )))
+        val jsargs = JSONObject(
+            mapOf(
+                "method" to "tools/call",
+                "params" to mapOf(
+                    "name" to toolName,
+                    "arguments" to jargs
+                )
+            )
+        )
 
         Log.i("mcpx4j-tool", "looking up $toolName")
         // Invoke the mcp.run tool with the given arguments
