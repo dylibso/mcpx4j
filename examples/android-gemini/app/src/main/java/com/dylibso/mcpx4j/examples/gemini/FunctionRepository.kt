@@ -13,7 +13,7 @@ data class FunctionRepository(
     val mcpxTools: Map<String, String>
 ) {
 
-    val servlets = object : LruCache<String, McpxServlet>(20) {
+    val servlets = object : LruCache<String, McpxServlet>(5) {
         override fun create(servletName: String): McpxServlet {
             val servletFactory = mcpx[servletName]
             return servletFactory.create()
