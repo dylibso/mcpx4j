@@ -4,6 +4,7 @@ import com.dylibso.mcpx4j.core.*
 import com.google.ai.client.generativeai.type.*
 import org.extism.sdk.chicory.*
 import org.json.JSONObject
+import kotlin.collections.mutableMapOf
 
 object ToolFetcher {
     fun fetchFunctions(): FunctionRepository {
@@ -33,21 +34,18 @@ object ToolFetcher {
         // Extract the metadata of each `McpxTool` into a `FunctionDeclaration`
         val functionDeclarations =
             mcpx.servletFactories().toList()
-                .flatMap  { toFunctionDeclarationList(it.schema()) }
-                .toList()
-        // Create a map name -> McpxTool for quicker lookup
+                .associate { it.name() to toFunctionDeclarationList(it.schema()) }
+        // Create a map name -> McpxServlet name for quicker lookup
         val mcpxTools =
-            mcpx.servletFactories().flatMap {
-                it.tools().map { it.value.name() to it.value } }.toMap()
-        return FunctionRepository(functionDeclarations, mcpxTools)
+            functionDeclarations.flatMap { e -> e.value.map { it.name to e.key } }.toMap()
+        return FunctionRepository(mcpx, functionDeclarations.flatMap { e -> e.value.map { it.name to it } }.toMap(), mcpxTools)
     }
 
     private fun toFunctionDeclarationList(toolSchemas: String): List<FunctionDeclaration> {
-        val tools = JSONObject(toolSchemas).getJSONObject("tools")
+        val tools = JSONObject(toolSchemas).getJSONArray("tools")
         val declarations = mutableListOf<FunctionDeclaration>()
-        for (name in tools.keys()) {
-
-            val tool = tools.getJSONObject(name)
+        for (i in 0..<tools.length()) {
+            val tool = tools.getJSONObject(i)
             val parsedSchema = ParsedSchema.parseObject(tool.getJSONObject("inputSchema"))
             val f = defineFunction(
                 name = tool.getString("name"),
@@ -59,6 +57,7 @@ object ToolFetcher {
         }
         return declarations;
     }
+
 
     private fun toFunctionDeclaration(tool: McpxTool): FunctionDeclaration {
         val parsedSchema = ParsedSchema.parse(tool.inputSchema())
