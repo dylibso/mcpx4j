@@ -12,12 +12,12 @@ public class ServletDescriptor {
 
     ServletDescriptor() {}
 
-    public ServletDescriptor(String slug, OffsetDateTime createdAt, OffsetDateTime modifiedAt, Meta meta, boolean has_client) {
+    public ServletDescriptor(String slug, OffsetDateTime createdAt, OffsetDateTime modifiedAt, Meta meta, boolean hasClient) {
         this.slug = slug;
         this.created_at = createdAt;
         this.modified_at = modifiedAt;
         this.meta = meta;
-        this.has_client = has_client;
+        this.has_client = hasClient;
     }
 
     public String slug() {

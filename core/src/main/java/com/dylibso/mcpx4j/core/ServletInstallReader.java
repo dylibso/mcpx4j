@@ -48,15 +48,11 @@ public class ServletInstallReader {
         if (permissions == null) {
             return new ServletSettings.Permissions(
                     readPermissionsNetwork(null),
-                    new ServletSettings.Permissions.FileSystem(Map.of()),
-                    false
-            );
+                    new ServletSettings.Permissions.FileSystem(Map.of()));
         }
         return new ServletSettings.Permissions(
                 readPermissionsNetwork(permissions.getJsonObject("network")),
-                readPermissionsFilesystem(permissions.getJsonObject("filesystem")),
-                permissions.getBoolean("oauth_client")
-        );
+                readPermissionsFilesystem(permissions.getJsonObject("filesystem")));
     }
 
     private static ServletSettings.Permissions.FileSystem readPermissionsFilesystem(JsonObject filesystem) {

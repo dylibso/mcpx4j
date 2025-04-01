@@ -4,7 +4,6 @@
       "name": "fetch",
       "settings": {
         "permissions": {
-          "oauth_client": true,
           "network": {
             "domains": [
               "*.example.com"
@@ -89,7 +88,8 @@
           "lastContentAddress": "abcdefg"
         },
         "created_at": "2024-12-13T15:15:36.812622+01:00",
-        "modified_at": "2024-12-16T19:58:24.392251+01:00"
+        "modified_at": "2024-12-16T19:58:24.392251+01:00",
+        "has_client": true
       }
     }]
 }
