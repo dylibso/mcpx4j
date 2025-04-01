@@ -143,7 +143,7 @@ public class Mcpx {
     }
 
     OAuthAwareConfigProvider refreshOauth(ServletInstall install, long now) {
-        if (!install.settings().permissions().oAuthClient()) {
+        if (!install.servlet().hasClient()) {
             return new OAuthAwareConfigProvider(install.settings.config());
         }
         String name = install.name();

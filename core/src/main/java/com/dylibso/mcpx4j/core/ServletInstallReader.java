@@ -26,7 +26,9 @@ public class ServletInstallReader {
                 servlet.getString("slug"),
                 OffsetDateTime.parse(servlet.getString("created_at")),
                 OffsetDateTime.parse(servlet.getString("modified_at")),
-                readServletMeta(servlet.getJsonObject("meta")));
+                readServletMeta(servlet.getJsonObject("meta")),
+                servlet.getBoolean("has_client")
+        );
     }
 
     private static ServletDescriptor.Meta readServletMeta(JsonObject meta) {
