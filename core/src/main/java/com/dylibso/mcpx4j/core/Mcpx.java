@@ -2,6 +2,7 @@ package com.dylibso.mcpx4j.core;
 
 import com.dylibso.mcpx4j.core.builtins.McpRunServlet;
 import com.dylibso.mcpx4j.core.builtins.McpxBuiltInServlet;
+import org.extism.sdk.chicory.ConfigProvider;
 import org.extism.sdk.chicory.HttpClientAdapter;
 import org.extism.sdk.chicory.JdkHttpClientAdapter;
 
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class Mcpx {
     public static class Builder {
@@ -103,7 +105,7 @@ public class Mcpx {
     private final HttpClient client;
     private final ConcurrentHashMap<String, McpxWasmServletFactory> plugins;
     private final ConcurrentHashMap<String, ServletInstall> servletInstalls;
-    private final ConcurrentHashMap<String, OAuthAwareConfigProvider> oauthTokens;
+    private final ConcurrentHashMap<String, ConfigProvider> configProviders;
     private final String profileSlug;
     private final McpxServletOptions config;
     private final List<McpxBuiltInServlet> builtIns;
@@ -116,49 +118,23 @@ public class Mcpx {
         this.client = new HttpClient(baseUrl, apiKey, httpClientAdapter, jsonDecoder);
         this.plugins = new ConcurrentHashMap<>();
         this.servletInstalls = new ConcurrentHashMap<>();
-        this.oauthTokens = new ConcurrentHashMap<>();
+        this.configProviders = new ConcurrentHashMap<>();
         this.builtIns = List.of(/*new McpRunServlet(client, jsonDecoder)*/);
     }
 
     public void refreshInstallations() {
         Map<String, ServletInstall> installations = client.installations(profileSlug);
         servletInstalls.putAll(installations);
-        if (config.oAuthAutoRefresh) {
-            refreshOauth();
-        }
     }
 
-    public void refreshOauth() {
-        var time = System.currentTimeMillis();
-        servletInstalls.values().parallelStream()
-                .forEach(install -> refreshOauth(install, time));
-    }
-
-    public void refreshOauth(String name) {
-        var time = System.currentTimeMillis();
-        ServletInstall install = servletInstalls.get(name);
-        if (install != null) {
-            refreshOauth(install, time);
-        }
-    }
-
-    OAuthAwareConfigProvider refreshOauth(ServletInstall install, long now) {
-        if (!install.settings().permissions().oAuthClient()) {
-            return new OAuthAwareConfigProvider(install.settings.config());
+    ConfigProvider refreshOauth(ServletInstall install, long now) {
+        if (!install.servlet().hasClient()) {
+            return ConfigProvider.ofMap(install.settings.config());
         }
         String name = install.name();
-        OAuthAwareConfigProvider servletOAuth = oauthTokens.get(name);
-        if (servletOAuth == null) {
-            var oAuth = client.oauth(profileSlug, install);
-            servletOAuth =
-                    new OAuthAwareConfigProvider(install.settings().config());
-            servletOAuth.updateOAuth(oAuth);
-            oauthTokens.put(name, servletOAuth);
-        } else if (servletOAuth.oAuth().maxTimestamp() > now) {
-            var oAuth = client.oauth(profileSlug, install);
-            servletOAuth.updateOAuth(oAuth);
-        }
-        return servletOAuth;
+        return configProviders.computeIfAbsent(
+                name, key -> new OAuthAwareConfigProvider(
+                        install.settings().config(), () -> client.oauth(profileSlug, install)));
     }
 
     public McpxServletFactory get(String name) {
@@ -184,9 +160,10 @@ public class Mcpx {
 
     public Collection<McpxServlet> servlets() {
         var servlets = new ArrayList<McpxServlet>(builtIns);
-        for (var name : servletInstalls.keySet()) {
-            servlets.add(this.get(name).create());
-        }
+        servlets.addAll(servletInstalls.keySet()
+                .parallelStream()
+                .map(k -> this.get(k).create())
+                .collect(Collectors.toList()));
         return servlets;
     }
 

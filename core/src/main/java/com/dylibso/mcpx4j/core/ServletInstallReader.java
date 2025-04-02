@@ -26,7 +26,9 @@ public class ServletInstallReader {
                 servlet.getString("slug"),
                 OffsetDateTime.parse(servlet.getString("created_at")),
                 OffsetDateTime.parse(servlet.getString("modified_at")),
-                readServletMeta(servlet.getJsonObject("meta")));
+                readServletMeta(servlet.getJsonObject("meta")),
+                servlet.getBoolean("has_client")
+        );
     }
 
     private static ServletDescriptor.Meta readServletMeta(JsonObject meta) {
@@ -46,15 +48,11 @@ public class ServletInstallReader {
         if (permissions == null) {
             return new ServletSettings.Permissions(
                     readPermissionsNetwork(null),
-                    new ServletSettings.Permissions.FileSystem(Map.of()),
-                    false
-            );
+                    new ServletSettings.Permissions.FileSystem(Map.of()));
         }
         return new ServletSettings.Permissions(
                 readPermissionsNetwork(permissions.getJsonObject("network")),
-                readPermissionsFilesystem(permissions.getJsonObject("filesystem")),
-                permissions.getBoolean("oauth_client")
-        );
+                readPermissionsFilesystem(permissions.getJsonObject("filesystem")));
     }
 
     private static ServletSettings.Permissions.FileSystem readPermissionsFilesystem(JsonObject filesystem) {

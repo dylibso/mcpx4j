@@ -8,14 +8,16 @@ public class ServletDescriptor {
     OffsetDateTime created_at;
     OffsetDateTime modified_at;
     Meta meta;
+    boolean has_client;
 
     ServletDescriptor() {}
 
-    public ServletDescriptor(String slug, OffsetDateTime createdAt, OffsetDateTime modifiedAt, Meta meta) {
+    public ServletDescriptor(String slug, OffsetDateTime createdAt, OffsetDateTime modifiedAt, Meta meta, boolean hasClient) {
         this.slug = slug;
         this.created_at = createdAt;
         this.modified_at = modifiedAt;
         this.meta = meta;
+        this.has_client = hasClient;
     }
 
     public String slug() {
@@ -32,6 +34,10 @@ public class ServletDescriptor {
 
     public Meta meta() {
         return meta;
+    }
+
+    public boolean hasClient() {
+        return has_client;
     }
 
     @Override
@@ -52,6 +58,7 @@ public class ServletDescriptor {
                 "slug='" + slug + '\'' +
                 ", createdAt=" + created_at +
                 ", modifiedAt=" + modified_at +
+                ", hasClient=" + has_client +
                 '}';
     }
 
