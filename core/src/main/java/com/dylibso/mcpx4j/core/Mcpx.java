@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class Mcpx {
     public static class Builder {
@@ -159,9 +160,10 @@ public class Mcpx {
 
     public Collection<McpxServlet> servlets() {
         var servlets = new ArrayList<McpxServlet>(builtIns);
-        for (var name : servletInstalls.keySet()) {
-            servlets.add(this.get(name).create());
-        }
+        servlets.addAll(servletInstalls.keySet()
+                .parallelStream()
+                .map(k -> this.get(k).create())
+                .collect(Collectors.toList()));
         return servlets;
     }
 

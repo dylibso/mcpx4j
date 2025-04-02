@@ -3,23 +3,21 @@ package com.dylibso.mcpx4j.core;
 import org.extism.sdk.chicory.Plugin;
 
 import java.nio.charset.StandardCharsets;
+import java.util.function.Supplier;
 
 public class McpxPluginTool implements McpxTool {
 
-    private final Plugin plugin;
+    private final Supplier<Plugin> pluginSupplier;
     private final String name;
     private final String description;
     private final String inputschema;
+    private volatile Plugin plugin;
 
-    McpxPluginTool(Plugin plugin, McpxToolDescriptor descriptor) {
-        this.plugin = plugin;
+    McpxPluginTool(Supplier<Plugin> pluginSupplier, McpxToolDescriptor descriptor) {
+        this.pluginSupplier = pluginSupplier;
         this.name = descriptor.name();
         this.description = descriptor.description();
         this.inputschema = descriptor.inputSchema();
-    }
-
-    public void updateOAuth(ServletOAuth oAuth) {
-        // FIXME plugin.setVar(...) ?
     }
 
     @Override
@@ -39,6 +37,9 @@ public class McpxPluginTool implements McpxTool {
 
     @Override
     public String call(String jsonInput) {
+        if (plugin == null) {
+            plugin = pl
+        }
         try {
             return new String(plugin.call(
                     "call",
