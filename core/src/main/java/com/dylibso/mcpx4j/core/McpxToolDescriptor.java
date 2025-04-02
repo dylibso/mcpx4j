@@ -7,9 +7,10 @@ public final class McpxToolDescriptor {
     String description;
     String inputSchema;
 
-    McpxToolDescriptor() {}
+    McpxToolDescriptor() {
+    }
 
-    McpxToolDescriptor(String name, String description, String inputSchema)  {
+    McpxToolDescriptor(String name, String description, String inputSchema) {
         this.name = name;
         this.description = description;
         this.inputSchema = inputSchema;
@@ -33,9 +34,11 @@ public final class McpxToolDescriptor {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof McpxToolDescriptor)) return false;
+        if (!(o instanceof McpxToolDescriptor))
+            return false;
         McpxToolDescriptor that = (McpxToolDescriptor) o;
-        return Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(inputSchema, that.inputSchema);
+        return Objects.equals(name, that.name) && Objects.equals(description, that.description)
+                && Objects.equals(inputSchema, that.inputSchema);
     }
 
     @Override
@@ -52,4 +55,3 @@ public final class McpxToolDescriptor {
                 '}';
     }
 }
-

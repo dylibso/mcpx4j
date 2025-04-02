@@ -1,18 +1,17 @@
 package com.dylibso.mcpx4j.core;
 
 import com.dylibso.chicory.wasi.WasiOptions;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import org.extism.sdk.chicory.ConfigProvider;
 import org.extism.sdk.chicory.ExtismHostFunction;
 import org.extism.sdk.chicory.ExtismValType;
 import org.extism.sdk.chicory.Manifest;
 import org.extism.sdk.chicory.ManifestWasm;
 import org.extism.sdk.chicory.Plugin;
-
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class McpxWasmServletFactory implements McpxServletFactory {
     private final ServletInstall install;
@@ -60,7 +59,8 @@ public class McpxWasmServletFactory implements McpxServletFactory {
         return new McpxWasmServlet(this.install.name(), this.install, tools);
     }
 
-    public static McpxWasmServletFactory create(byte[] bytes, String name, ServletInstall install, ConfigProvider configProvider, McpxServletOptions config, JsonDecoder jsonDecoder) {
+    public static McpxWasmServletFactory create(byte[] bytes, String name, ServletInstall install,
+            ConfigProvider configProvider, McpxServletOptions config, JsonDecoder jsonDecoder) {
         var wasm = ManifestWasm.fromBytes(bytes).build();
         Manifest.Options opts = new Manifest.Options()
                 .withConfigProvider(configProvider)

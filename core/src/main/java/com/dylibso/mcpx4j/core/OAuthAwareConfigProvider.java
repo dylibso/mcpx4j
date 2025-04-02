@@ -1,17 +1,16 @@
 package com.dylibso.mcpx4j.core;
 
-import org.extism.sdk.chicory.ConfigProvider;
-
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
+import org.extism.sdk.chicory.ConfigProvider;
 
 public class OAuthAwareConfigProvider implements ConfigProvider {
     volatile ServletOAuth oAuth;
     private Map<String, String> map;
     private Supplier<ServletOAuth> oAuthSupplier;
 
-    public OAuthAwareConfigProvider(){
+    public OAuthAwareConfigProvider() {
         this.map = Map.of();
     }
 
@@ -44,7 +43,8 @@ public class OAuthAwareConfigProvider implements ConfigProvider {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof OAuthAwareConfigProvider)) return false;
+        if (!(o instanceof OAuthAwareConfigProvider))
+            return false;
         OAuthAwareConfigProvider that = (OAuthAwareConfigProvider) o;
         return Objects.equals(oAuth, that.oAuth) && Objects.equals(map, that.map);
     }

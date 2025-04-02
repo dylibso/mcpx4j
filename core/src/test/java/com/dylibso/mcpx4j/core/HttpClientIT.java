@@ -1,22 +1,20 @@
 package com.dylibso.mcpx4j.core;
 
-import com.dylibso.chicory.wasm.Parser;
-import com.dylibso.chicory.wasm.WasmModule;
-import com.sun.net.httpserver.HttpServer;
-import org.extism.sdk.chicory.JdkHttpClientAdapter;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.Map;
-import java.util.stream.Stream;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.dylibso.chicory.wasm.Parser;
+import com.dylibso.chicory.wasm.WasmModule;
+import com.sun.net.httpserver.HttpServer;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.Map;
+import java.util.stream.Stream;
+import org.extism.sdk.chicory.JdkHttpClientAdapter;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class HttpClientIT {
     private static Stream<Arguments> provideJsonDecoder() {
@@ -48,7 +46,8 @@ class HttpClientIT {
                     Map.of("username", "foo"),
                     new ServletSettings.Permissions(
                             new ServletSettings.Permissions.Network("*.example.com"),
-                            new ServletSettings.Permissions.FileSystem(Map.of("/home/foo", "${HOME}")))), settings);
+                            new ServletSettings.Permissions.FileSystem(Map.of("/home/foo", "${HOME}")))),
+                    settings);
         } finally {
             server.stop(0);
         }

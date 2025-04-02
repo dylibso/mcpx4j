@@ -5,7 +5,9 @@ import java.util.Objects;
 public class ServletOAuthInfo {
     String config_name;
     String access_token;
-    ServletOAuthInfo(){}
+
+    ServletOAuthInfo() {
+    }
 
     public ServletOAuthInfo(String configName, String accessToken) {
         this.config_name = configName;
@@ -15,13 +17,15 @@ public class ServletOAuthInfo {
     public String configName() {
         return config_name;
     }
+
     public String accessToken() {
         return access_token;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof ServletOAuthInfo)) return false;
+        if (!(o instanceof ServletOAuthInfo))
+            return false;
         ServletOAuthInfo that = (ServletOAuthInfo) o;
         return Objects.equals(config_name, that.config_name) && Objects.equals(access_token, that.access_token);
     }

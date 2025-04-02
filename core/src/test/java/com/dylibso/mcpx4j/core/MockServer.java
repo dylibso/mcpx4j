@@ -2,7 +2,6 @@ package com.dylibso.mcpx4j.core;
 
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -46,6 +45,7 @@ public class MockServer {
 
         return server;
     }
+
     static HttpServer fetch(InetSocketAddress address) throws IOException {
         byte[] wasm = MockServer.class.getClassLoader().getResourceAsStream("fetch.wasm").readAllBytes();
         var caddress = "abcdefg";

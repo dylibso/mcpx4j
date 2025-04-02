@@ -2,7 +2,6 @@ package com.dylibso.mcpx4j.core.builtins;
 
 import com.dylibso.mcpx4j.core.McpxServlet;
 import com.dylibso.mcpx4j.core.McpxServletFactory;
-
 import java.util.stream.Collectors;
 
 public interface McpxBuiltInServlet extends McpxServlet {

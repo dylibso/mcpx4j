@@ -11,11 +11,8 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
-import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
@@ -34,10 +31,10 @@ public class JacksonDecoder implements JsonDecoder {
                 .addHandler(new DeserializationProblemHandler() {
                     @Override
                     public Object handleUnexpectedToken(DeserializationContext ctxt,
-                                                        JavaType targetType,
-                                                        JsonToken t,
-                                                        JsonParser p,
-                                                        String failureMsg) throws IOException {
+                            JavaType targetType,
+                            JsonToken t,
+                            JsonParser p,
+                            String failureMsg) throws IOException {
                         // Check if we're handling the schema field in ServletDescriptor.Meta
                         if (p.getCurrentName() != null &&
                                 p.getCurrentName().equals("schema") &&
@@ -109,10 +106,10 @@ public class JacksonDecoder implements JsonDecoder {
     public String parseSearchRequest(byte[] bytes) {
         try {
             return new ObjectMapper()
-                .readTree(bytes)
-                .get("params")
-                .get("arguments")
-                .get("q").asText();
+                    .readTree(bytes)
+                    .get("params")
+                    .get("arguments")
+                    .get("q").asText();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -135,10 +132,10 @@ public class JacksonDecoder implements JsonDecoder {
             setupContext.addDeserializationProblemHandler(new DeserializationProblemHandler() {
                 @Override
                 public Object handleUnexpectedToken(DeserializationContext ctxt,
-                                                    JavaType targetType,
-                                                    JsonToken t,
-                                                    JsonParser p,
-                                                    String failureMsg) throws IOException {
+                        JavaType targetType,
+                        JsonToken t,
+                        JsonParser p,
+                        String failureMsg) throws IOException {
                     // Check if we're handling the schema field in ServletDescriptor.Meta
                     if (p.getCurrentName() != null &&
                             p.getCurrentName().equals("schema") &&

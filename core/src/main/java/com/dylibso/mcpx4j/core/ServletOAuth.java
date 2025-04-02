@@ -5,7 +5,8 @@ public class ServletOAuth {
     long maxTimestamp;
     int maxAge;
 
-    ServletOAuth() {}
+    ServletOAuth() {
+    }
 
     ServletOAuth(ServletOAuthInfo info, long maxTimestamp, int maxAge) {
         this.info = info;
@@ -24,6 +25,5 @@ public class ServletOAuth {
     public int maxAge() {
         return maxAge;
     }
-
 
 }

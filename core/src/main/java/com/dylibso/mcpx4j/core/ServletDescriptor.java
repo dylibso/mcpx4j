@@ -10,7 +10,8 @@ public class ServletDescriptor {
     Meta meta;
     boolean has_client;
 
-    ServletDescriptor() {}
+    ServletDescriptor() {
+    }
 
     public ServletDescriptor(String slug, OffsetDateTime createdAt, OffsetDateTime modifiedAt, Meta meta, boolean hasClient) {
         this.slug = slug;
@@ -42,9 +43,11 @@ public class ServletDescriptor {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof ServletDescriptor)) return false;
+        if (!(o instanceof ServletDescriptor))
+            return false;
         ServletDescriptor that = (ServletDescriptor) o;
-        return Objects.equals(slug, that.slug) && Objects.equals(created_at, that.created_at) && Objects.equals(modified_at, that.modified_at);
+        return Objects.equals(slug, that.slug) && Objects.equals(created_at, that.created_at)
+                && Objects.equals(modified_at, that.modified_at);
     }
 
     @Override
@@ -66,7 +69,8 @@ public class ServletDescriptor {
         String schema;
         String lastContentAddress;
 
-        Meta() {}
+        Meta() {
+        }
 
         public Meta(String schema, String lastContentAddress) {
             this.schema = schema;
@@ -87,7 +91,8 @@ public class ServletDescriptor {
 
         @Override
         public boolean equals(Object o) {
-            if (!(o instanceof Meta)) return false;
+            if (!(o instanceof Meta))
+                return false;
             Meta meta = (Meta) o;
             return Objects.equals(schema, meta.schema) && Objects.equals(lastContentAddress, meta.lastContentAddress);
         }
