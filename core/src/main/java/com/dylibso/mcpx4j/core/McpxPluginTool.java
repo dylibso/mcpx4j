@@ -38,7 +38,7 @@ public class McpxPluginTool implements McpxTool {
     @Override
     public String call(String jsonInput) {
         if (plugin == null) {
-            plugin = pl
+            plugin = pluginSupplier.get();
         }
         try {
             return new String(plugin.call(

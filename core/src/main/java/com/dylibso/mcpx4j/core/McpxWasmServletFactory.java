@@ -49,14 +49,13 @@ public class McpxWasmServletFactory implements McpxServletFactory {
     }
 
     public McpxServlet create() {
-        var plugin = Plugin.ofManifest(manifest)
+        var pluginBuilder = Plugin.ofManifest(manifest)
                 .withLogger(config.logger)
-                .withHostFunctions(DEPRECATED_CONFIG_GET.get())
-                .build();
+                .withHostFunctions(DEPRECATED_CONFIG_GET.get());
 
         var descriptors = jsonDecoder.toolDescriptors(schema().getBytes(StandardCharsets.UTF_8));
         Map<String, McpxTool> tools = descriptors.stream()
-                .map(descriptor -> new McpxPluginTool(plugin, descriptor))
+                .map(descriptor -> new McpxPluginTool(pluginBuilder::build, descriptor))
                 .collect(Collectors.toMap(McpxPluginTool::name, tool -> tool));
         return new McpxWasmServlet(this.install.name(), this.install, tools);
     }
