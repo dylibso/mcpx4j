@@ -36,3 +36,7 @@ build/
 
 ### Dotenv ###
 .env
+
+.cache
+
+
