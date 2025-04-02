@@ -7,7 +7,8 @@ public final class ServletInstall {
     ServletDescriptor servlet;
     ServletSettings settings;
 
-    ServletInstall() {}
+    ServletInstall() {
+    }
 
     public ServletInstall(String name, ServletDescriptor servlet, ServletSettings settings) {
         this.name = name;
@@ -29,8 +30,10 @@ public final class ServletInstall {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
+        if (obj == this)
+            return true;
+        if (obj == null || obj.getClass() != this.getClass())
+            return false;
         var that = (ServletInstall) obj;
         return Objects.equals(this.name, that.name) &&
                 Objects.equals(this.servlet, that.servlet) &&

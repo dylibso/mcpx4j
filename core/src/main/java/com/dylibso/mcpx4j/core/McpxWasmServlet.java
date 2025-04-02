@@ -30,7 +30,8 @@ public class McpxWasmServlet implements McpxServlet {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof McpxWasmServlet)) return false;
+        if (!(o instanceof McpxWasmServlet))
+            return false;
         McpxWasmServlet that = (McpxWasmServlet) o;
         return Objects.equals(name, that.name) && Objects.equals(tools, that.tools);
     }

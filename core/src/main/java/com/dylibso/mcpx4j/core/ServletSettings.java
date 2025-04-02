@@ -8,7 +8,8 @@ public final class ServletSettings {
     private Map<String, String> config;
     private Permissions permissions;
 
-    ServletSettings() {}
+    ServletSettings() {
+    }
 
     public ServletSettings(Map<String, String> config, Permissions permissions) {
         this.config = config;
@@ -25,8 +26,10 @@ public final class ServletSettings {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
+        if (obj == this)
+            return true;
+        if (obj == null || obj.getClass() != this.getClass())
+            return false;
         var that = (ServletSettings) obj;
         return Objects.equals(this.config, that.config) &&
                 Objects.equals(this.permissions, that.permissions);
@@ -48,7 +51,8 @@ public final class ServletSettings {
         Network network;
         FileSystem filesystem;
 
-        Permissions() {}
+        Permissions() {
+        }
 
         public Permissions(Network network, FileSystem filesystem) {
             this.network = network;
@@ -65,8 +69,10 @@ public final class ServletSettings {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == this) return true;
-            if (obj == null || obj.getClass() != this.getClass()) return false;
+            if (obj == this)
+                return true;
+            if (obj == null || obj.getClass() != this.getClass())
+                return false;
             var that = (Permissions) obj;
             return Objects.equals(this.network, that.network) &&
                     Objects.equals(this.filesystem, that.filesystem);
@@ -87,7 +93,8 @@ public final class ServletSettings {
         public static final class Network {
             String[] domains;
 
-            Network() {}
+            Network() {
+            }
 
             public Network(String... domains) {
                 this.domains = domains;
@@ -99,8 +106,10 @@ public final class ServletSettings {
 
             @Override
             public boolean equals(Object obj) {
-                if (obj == this) return true;
-                if (obj == null || obj.getClass() != this.getClass()) return false;
+                if (obj == this)
+                    return true;
+                if (obj == null || obj.getClass() != this.getClass())
+                    return false;
                 var that = (Network) obj;
                 return Arrays.equals(this.domains, that.domains);
             }
@@ -121,7 +130,8 @@ public final class ServletSettings {
         public static final class FileSystem {
             Map<String, String> volumes;
 
-            FileSystem(){}
+            FileSystem() {
+            }
 
             public FileSystem(Map<String, String> volumes) {
                 this.volumes = volumes;
@@ -133,8 +143,10 @@ public final class ServletSettings {
 
             @Override
             public boolean equals(Object obj) {
-                if (obj == this) return true;
-                if (obj == null || obj.getClass() != this.getClass()) return false;
+                if (obj == this)
+                    return true;
+                if (obj == null || obj.getClass() != this.getClass())
+                    return false;
                 var that = (FileSystem) obj;
                 return Objects.equals(this.volumes, that.volumes);
             }
@@ -151,5 +163,5 @@ public final class ServletSettings {
             }
 
         }
-        }
+    }
 }

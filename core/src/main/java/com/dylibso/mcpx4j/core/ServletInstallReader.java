@@ -2,7 +2,6 @@ package com.dylibso.mcpx4j.core;
 
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
-
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +26,7 @@ public class ServletInstallReader {
                 OffsetDateTime.parse(servlet.getString("created_at")),
                 OffsetDateTime.parse(servlet.getString("modified_at")),
                 readServletMeta(servlet.getJsonObject("meta")),
-                servlet.getBoolean("has_client")
-        );
+                servlet.getBoolean("has_client"));
     }
 
     private static ServletDescriptor.Meta readServletMeta(JsonObject meta) {

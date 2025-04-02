@@ -1,9 +1,8 @@
 package com.dylibso.mcpx4j.core;
 
-import org.extism.sdk.chicory.Plugin;
-
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
+import org.extism.sdk.chicory.Plugin;
 
 public class McpxPluginTool implements McpxTool {
 

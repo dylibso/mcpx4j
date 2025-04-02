@@ -76,6 +76,9 @@
         <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
+        <spotless-maven-plugin.version>2.40.0</spotless-maven-plugin.version>
+        <quarkus-ide-config.version>3.19.1</quarkus-ide-config.version>
+        <formatter-maven-plugin.version>2.26.0</formatter-maven-plugin.version>
     </properties>
 
     <profiles>
@@ -89,6 +92,52 @@
                 <module>core</module>
                 <module>examples</module>
             </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>net.revelc.code.formatter</groupId>
+                        <artifactId>formatter-maven-plugin</artifactId>
+                        <version>${formatter-maven-plugin.version}</version>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>quarkus-ide-config</artifactId>
+                                <groupId>io.quarkus</groupId>
+                                <version>${quarkus-ide-config.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <!-- store outside of target to speed up formatting when mvn clean is used -->
+                            <cachedir>.cache/formatter-maven-plugin-${formatter-maven-plugin.version}</cachedir>
+                            <configFile>eclipse-format.xml</configFile>
+                            <lineEnding>LF</lineEnding>
+                            <skip>${format.skip}</skip>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>format</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>net.revelc.code</groupId>
+                        <artifactId>impsort-maven-plugin</artifactId>
+                        <configuration>
+                            <removeUnused>true</removeUnused>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>sort-imports</id>
+                                <goals>
+                                    <goal>sort</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
         <profile>

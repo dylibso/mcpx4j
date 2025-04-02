@@ -3,7 +3,6 @@ package com.dylibso.mcpx4j.core;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
-
 import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +54,5 @@ public class JakartaJsonDecoder implements JsonDecoder {
             return new McpxToolDescriptor(name, description, inputSchema.toString());
         }
     }
-
-
 
 }

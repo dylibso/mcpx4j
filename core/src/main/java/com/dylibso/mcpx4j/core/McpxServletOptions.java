@@ -27,12 +27,14 @@ public class McpxServletOptions {
         HttpConfig chicoryHttpConfig;
         Logger chicoryLogger;
 
-        private Builder() {}
+        private Builder() {
+        }
 
         public Builder withAot() {
             this.aot = true;
             return this;
         }
+
         public Builder withOAuthAutoRefresh() {
             this.oAuthAutoRefresh = true;
             return this;
@@ -52,8 +54,8 @@ public class McpxServletOptions {
             return new McpxServletOptions(
                     aot,
                     oAuthAutoRefresh,
-                    chicoryHttpConfig == null? HttpConfig.defaultConfig() : chicoryHttpConfig,
-                    chicoryLogger == null? new SystemLogger() : chicoryLogger);
+                    chicoryHttpConfig == null ? HttpConfig.defaultConfig() : chicoryHttpConfig,
+                    chicoryLogger == null ? new SystemLogger() : chicoryLogger);
         }
     }
 }
