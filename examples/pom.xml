@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>examples</artifactId>
+    <name>examples</name>
     <packaging>pom</packaging>
     <modules>
         <module>langchain4j-ollama</module>

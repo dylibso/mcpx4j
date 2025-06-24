@@ -6,6 +6,7 @@
 
     <groupId>com.dylibso.mcpx4j.examples</groupId>
     <artifactId>langchain4j-ollama</artifactId>
+    <name>langchain4j-ollama</name>
     <version>999-SNAPSHOT</version>
 
     <properties>
