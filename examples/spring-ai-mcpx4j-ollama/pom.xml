@@ -13,6 +13,7 @@
     <groupId>com.dylibso.mcpx4j.examples</groupId>
     <artifactId>spring-ai-mcpx4j-ollama</artifactId>
     <version>999-SNAPSHOT</version>
+    <name>spring-ai-mcpx4j-ollama</name>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

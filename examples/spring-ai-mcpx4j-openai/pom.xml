@@ -12,6 +12,7 @@
 
     <groupId>com.dylibso.mcpx4j.examples</groupId>
     <artifactId>spring-ai-mcpx4j-openai</artifactId>
+    <name>spring-ai-mcpx4j-openai</name>
     <version>999-SNAPSHOT</version>
 
     <properties>
