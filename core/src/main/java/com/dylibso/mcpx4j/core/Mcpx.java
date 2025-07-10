@@ -12,8 +12,8 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import org.extism.sdk.chicory.ConfigProvider;
-import org.extism.sdk.chicory.HttpClientAdapter;
-import org.extism.sdk.chicory.JdkHttpClientAdapter;
+import org.extism.sdk.chicory.http.HttpClientAdapter;
+import org.extism.sdk.chicory.http.client.javanet.JavaNetHttpClientAdapter;
 
 public class Mcpx {
     public static class Builder {
@@ -63,7 +63,7 @@ public class Mcpx {
                 jsonDecoder = new JacksonDecoder();
             }
             if (httpClientAdapter == null) {
-                httpClientAdapter = new JdkHttpClientAdapter();
+                httpClientAdapter = new JavaNetHttpClientAdapter();
             }
             return new Mcpx(apiKey, baseUrl, profileSlug, jsonDecoder, httpClientAdapter, config);
         }

@@ -17,6 +17,13 @@ dependencyResolutionManagement {
         google()
         mavenLocal()
         maven { url = uri("https://jitpack.io") }
+        maven {
+            url = uri("https://maven.pkg.github.com/evacchi/chicory-compiler-android")
+            credentials {
+                username = providers.gradleProperty("gpr.user").orElse(providers.environmentVariable("USERNAME")).orNull
+                password = providers.gradleProperty("gpr.key").orElse(providers.environmentVariable("TOKEN")).orNull
+            }
+        }
         mavenCentral()
     }
 }

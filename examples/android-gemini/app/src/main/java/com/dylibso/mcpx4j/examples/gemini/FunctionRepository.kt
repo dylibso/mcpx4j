@@ -6,6 +6,10 @@ import com.dylibso.mcpx4j.core.Mcpx
 import com.dylibso.mcpx4j.core.McpxServlet
 import com.google.ai.client.generativeai.type.FunctionDeclaration
 import org.json.JSONObject
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import kotlin.toString
 
 data class FunctionRepository(
     val mcpx: Mcpx,
@@ -19,6 +23,9 @@ data class FunctionRepository(
             return servletFactory.create()
         }
     }
+
+    val service = Executors.newSingleThreadExecutor {
+        Thread(ThreadGroup("chicory"), it, "chicory-thread", 8 * 1024 * 1024) }
 
     fun call(toolName: String, args: Map<String, String?>): JSONObject {
         val servletName = mcpxTools[toolName]
@@ -42,7 +49,9 @@ data class FunctionRepository(
         Log.i("mcpx4j-tool", "invoking $toolName with args = $jargs")
         val tool = servlet.tools()[toolName]!!
 
-        val res = tool.call(jsargs.toString())
+        val call: Callable<String> = Callable { tool.call(jsargs.toString()) }
+        val f: Future<String> = service.submit(call)
+        val res = f.get()
         Log.i("mcpx4j-tool", "$toolName returned: $res")
 
         // Ensure we always return a map

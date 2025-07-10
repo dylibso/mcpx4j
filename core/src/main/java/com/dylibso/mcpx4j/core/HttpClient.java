@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import org.extism.sdk.chicory.HttpClientAdapter;
+import org.extism.sdk.chicory.http.HttpClientAdapter;
 
 public class HttpClient {
     private final String baseUrl;
