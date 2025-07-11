@@ -1,6 +1,5 @@
 package com.dylibso.mcpx4j.examples.gemini
 
-import com.dylibso.chicory.experimental.android.aot.AotAndroidMachine
 import com.dylibso.mcpx4j.core.*
 import com.google.ai.client.generativeai.type.*
 import org.extism.sdk.chicory.*
@@ -16,7 +15,8 @@ object ToolFetcher {
             Mcpx.forApiKey(BuildConfig.mcpRunKey)
                 .withServletOptions(
                     McpxServletOptions.builder()
-                        .withMachineFactory{ AotAndroidMachine(it) }
+                        // Uncomment the following line if you want to try the experimental Android compiler
+                        // .withMachineFactory{ com.dylibso.chicory.experimental.android.aot.AotAndroidMachine(it) }
                         // Setup an HTTP client compatible with Android
                         // on the Chicory runtime
                         .withChicoryHttpConfig(AndroidHttpConfig.get())

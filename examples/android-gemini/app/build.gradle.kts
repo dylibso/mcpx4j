@@ -54,7 +54,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.generativeai)
     implementation(libs.mcpx4j)
-    implementation("com.dylibso.chicory:android-aot:999-SNAPSHOT")
+    implementation(libs.android.aot)
     implementation(libs.extism.sdk.http.config.android)
     implementation(libs.jackson.databind)
     implementation(libs.jackson.datatype.jsr310)
