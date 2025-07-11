@@ -15,7 +15,12 @@
     <dependencies>
         <dependency>
             <groupId>org.extism.sdk</groupId>
-            <artifactId>chicory-sdk</artifactId>
+            <artifactId>chicory-sdk-core</artifactId>
+            <version>${chicory-sdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.extism.sdk</groupId>
+            <artifactId>http-config-generic</artifactId>
             <version>${chicory-sdk.version}</version>
         </dependency>
 

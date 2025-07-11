@@ -3,6 +3,8 @@ package com.dylibso.mcpx4j.examples.gemini
 import com.dylibso.mcpx4j.core.*
 import com.google.ai.client.generativeai.type.*
 import org.extism.sdk.chicory.*
+import org.extism.sdk.chicory.http.client.urlconnection.HttpUrlConnectionClientAdapter
+import org.extism.sdk.chicory.http.config.android.AndroidHttpConfig
 import org.json.JSONObject
 import kotlin.collections.mutableMapOf
 
@@ -13,11 +15,11 @@ object ToolFetcher {
             Mcpx.forApiKey(BuildConfig.mcpRunKey)
                 .withServletOptions(
                     McpxServletOptions.builder()
+                        // Uncomment the following line if you want to try the experimental Android compiler
+                        // .withMachineFactory{ com.dylibso.chicory.experimental.android.aot.AotAndroidMachine(it) }
                         // Setup an HTTP client compatible with Android
                         // on the Chicory runtime
-                        .withChicoryHttpConfig(HttpConfig.builder()
-                            .withJsonCodec { JacksonJsonCodec() }
-                            .withClientAdapter { HttpUrlConnectionClientAdapter() }.build())
+                        .withChicoryHttpConfig(AndroidHttpConfig.get())
                         // Configure an alternative, Android-specific logger
                         .withChicoryLogger(AndroidLogger("mcpx4j-runtime"))
                         .build())

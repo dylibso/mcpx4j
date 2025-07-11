@@ -2,16 +2,23 @@ package com.dylibso.mcpx4j.core;
 
 import com.dylibso.chicory.log.Logger;
 import com.dylibso.chicory.log.SystemLogger;
-import org.extism.sdk.chicory.HttpConfig;
+import com.dylibso.chicory.runtime.Instance;
+import com.dylibso.chicory.runtime.Machine;
+import java.util.function.Function;
+import org.extism.sdk.chicory.http.HttpConfig;
+import org.extism.sdk.chicory.http.config.generic.GenericHttpConfig;
 
 public class McpxServletOptions {
     final boolean aot;
+    Function<Instance, Machine> machineFactory;
     public boolean oAuthAutoRefresh;
     final HttpConfig chicoryHttpConfig;
     final Logger logger;
 
-    McpxServletOptions(boolean aot, boolean oAuthAutoRefresh, HttpConfig chicoryHttpConfig, Logger logger) {
+    McpxServletOptions(boolean aot, Function<Instance, Machine> machineFactory, boolean oAuthAutoRefresh,
+            HttpConfig chicoryHttpConfig, Logger logger) {
         this.aot = aot;
+        this.machineFactory = machineFactory;
         this.oAuthAutoRefresh = oAuthAutoRefresh;
         this.chicoryHttpConfig = chicoryHttpConfig;
         this.logger = logger;
@@ -23,6 +30,7 @@ public class McpxServletOptions {
 
     public static class Builder {
         boolean aot;
+        Function<Instance, Machine> machineFactory;
         boolean oAuthAutoRefresh;
         HttpConfig chicoryHttpConfig;
         Logger chicoryLogger;
@@ -32,6 +40,11 @@ public class McpxServletOptions {
 
         public Builder withAot() {
             this.aot = true;
+            return this;
+        }
+
+        public Builder withMachineFactory(Function<Instance, Machine> machineFactory) {
+            this.machineFactory = machineFactory;
             return this;
         }
 
@@ -53,8 +66,9 @@ public class McpxServletOptions {
         public McpxServletOptions build() {
             return new McpxServletOptions(
                     aot,
+                    machineFactory,
                     oAuthAutoRefresh,
-                    chicoryHttpConfig == null ? HttpConfig.defaultConfig() : chicoryHttpConfig,
+                    chicoryHttpConfig == null ? GenericHttpConfig.get() : chicoryHttpConfig,
                     chicoryLogger == null ? new SystemLogger() : chicoryLogger);
         }
     }

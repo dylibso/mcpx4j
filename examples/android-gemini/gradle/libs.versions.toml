@@ -1,5 +1,6 @@
 [versions]
 agp = "8.7.3"
+androidAot = "0.0.1"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -12,9 +13,11 @@ composeBom = "2024.04.01"
 generativeai = "0.9.0"
 googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 mcpx4j = "999-SNAPSHOT"
+extism-sdk-http-config-android = "0.2.0"
 jackson = "2.18.2"
 
 [libraries]
+android-aot = { module = "com.dylibso.chicory:android-aot", version.ref = "androidAot" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -32,6 +35,7 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "generativeai" }
 mcpx4j = { group = "com.dylibso.mcpx4j", name = "core", version.ref = "mcpx4j" }
+extism-sdk-http-config-android = { group = "org.extism.sdk", name = "http-config-android", version.ref = "extism-sdk-http-config-android" }
 jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
 jackson-datatype-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310", version.ref = "jackson" }
 

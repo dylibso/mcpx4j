@@ -10,7 +10,7 @@ import com.google.ai.client.generativeai.type.content
 class ChatSession(private val functionRepository: FunctionRepository) {
     private val generativeModel = GenerativeModel(
         // Use Gemini 2.0
-        modelName = "gemini-2.0-flash-exp",
+        modelName = "gemini-2.5-flash",
         // Use the API Key we configured in local.properties
         apiKey = BuildConfig.apiKey,
         // Plug our tools

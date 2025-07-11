@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.stream.Stream;
-import org.extism.sdk.chicory.JdkHttpClientAdapter;
+import org.extism.sdk.chicory.http.client.javanet.JavaNetHttpClientAdapter;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -36,7 +36,7 @@ class HttpClientIT {
             server.start();
 
             var httpClient = new HttpClient(
-                    baseUrl, "my-key", new JdkHttpClientAdapter(), jsonDecoder);
+                    baseUrl, "my-key", new JavaNetHttpClientAdapter(), jsonDecoder);
             var installations = httpClient.installations(profileId);
             assertFalse(installations.isEmpty());
             var cfg = installations.get("fetch");
@@ -66,7 +66,7 @@ class HttpClientIT {
             server.start();
 
             var httpClient = new HttpClient(
-                    baseUrl, "my-key", new JdkHttpClientAdapter(), jsonDecoder);
+                    baseUrl, "my-key", new JavaNetHttpClientAdapter(), jsonDecoder);
             var installations = httpClient.installations(profileId);
             var binary = httpClient.fetch(installations.get("fetch"));
 

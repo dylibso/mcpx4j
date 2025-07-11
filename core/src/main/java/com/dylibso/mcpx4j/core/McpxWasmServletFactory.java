@@ -74,6 +74,10 @@ public class McpxWasmServletFactory implements McpxServletFactory {
             opts = opts.withAoT();
         }
 
+        if (config.machineFactory != null) {
+            opts = opts.withMachineFactory(config.machineFactory);
+        }
+
         var manifest = Manifest.ofWasms(wasm)
                 .withOptions(opts).build();
 
