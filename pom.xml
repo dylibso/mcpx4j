@@ -6,7 +6,7 @@
 
     <groupId>com.dylibso.mcpx4j</groupId>
     <artifactId>mcpx4j</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>0.2.0</version>
 
     <name>mcpx4j</name>
     <description>Java client library for https://mcp.run - call portable and secure tools for your AI Agents and Apps</description>

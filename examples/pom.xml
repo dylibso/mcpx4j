@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.dylibso.mcpx4j</groupId>
         <artifactId>mcpx4j</artifactId>
-        <version>999-SNAPSHOT</version>
+        <version>0.2.0</version>
     </parent>
 
     <artifactId>examples</artifactId>
